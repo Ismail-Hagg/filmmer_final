@@ -8,7 +8,6 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    
     var topPadding = MediaQuery.of(context).padding.top;
     return Scaffold(
       body: SafeArea(
@@ -29,7 +28,7 @@ class SignUpScreen extends StatelessWidget {
                          width: size.width,
                 height: (size.height - topPadding) * 0.5,
                 decoration: const BoxDecoration(
-                    color: Colors.red,
+                    color: Colors.white,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(50),
                         topRight: Radius.circular(50))),
