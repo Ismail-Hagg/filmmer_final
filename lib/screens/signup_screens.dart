@@ -8,6 +8,7 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    
     var topPadding = MediaQuery.of(context).padding.top;
     return Scaffold(
       body: SafeArea(
