@@ -28,7 +28,9 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cached_network_image: ^3.2.1
+  cloud_firestore: ^3.4.2
   cupertino_icons: ^1.0.2
+  file_picker: ^5.0.0
   firebase_auth: ^3.6.1
   firebase_core: ^1.20.0
   flutter:
@@ -36,6 +38,7 @@ dependencies:
   get: ^4.6.5
   google_sign_in: ^5.4.0
   shape_of_view_null_safe: ^2.0.0
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_lints: ^2.0.0
@@ -58,6 +61,7 @@ flutter:
     - assets/images/twitter.png
     - assets/images/facebook.png
     - assets/images/placeholder.jpg
+    - assets/images/user.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see

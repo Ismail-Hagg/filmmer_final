@@ -14,7 +14,7 @@ class ControllScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<AuthController>(
-      init: Get.put(AuthController()),
+      init: Get.find<AuthController>(),
       builder: (controller) =>
           controller.user == null ? LoginScreen() : HomeScreen(),
     );

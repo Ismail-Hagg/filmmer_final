@@ -21,6 +21,8 @@ class CircleContainer extends StatelessWidget {
   final TextOverflow? flowDown;
   final double? spaceUp;
   final Widget? child;
+  final String? path;
+  final DecorationImage? image;
   const CircleContainer(
       {Key? key,
       this.height,
@@ -39,7 +41,7 @@ class CircleContainer extends StatelessWidget {
       this.weightUp,
       this.weightDown,
       this.flowUp,
-      this.flowDown, this.spaceUp, this.child})
+      this.flowDown, this.spaceUp, this.child, this.path, this.image})
       : super(key: key);
 
   @override
@@ -50,6 +52,7 @@ class CircleContainer extends StatelessWidget {
           height: height,
           width: width,
           decoration: BoxDecoration(
+             image: image,
             shape: BoxShape.circle,
             color: color ?? Colors.transparent,
             border: Border.all(
@@ -59,22 +62,22 @@ class CircleContainer extends StatelessWidget {
           child: child??Container(),
         ),
         SizedBox(height: spaceUp??0.0,),
-        CustomText(
+        textUp!=null? CustomText(
           text: textUp,
           size: sizeUp,
           color: colorUp,
           flow: flowUp,
           maxline: maxUp,
           weight:weightUp,
-        ),
-        CustomText(
+        ):Container(),
+        textDown!=null? CustomText(
           text: textDown,
           size: sizeDown,
           color: colorDown,
           flow: flowDown,
           maxline: maxDown,
           weight:weightDown,
-        )
+        ):Container(),
       ],
     );
   }
