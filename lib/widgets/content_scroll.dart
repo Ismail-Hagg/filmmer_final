@@ -1,11 +1,15 @@
 import 'package:filmmer_final/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../helper/constants.dart';
+import '../models/movie_model.dart';
+import '../screens/movie_detale.dart';
 import 'circle_container.dart';
 import 'movie_widget.dart';
 
 class ContentScroll extends StatelessWidget {
   final String title;
-  final List? movie;
+  final Rx<HomeTopMovies>? movie; 
   final List? cast;
   final String? link;
   final bool isArrow;
@@ -47,29 +51,38 @@ class ContentScroll extends StatelessWidget {
         ),
         const SizedBox(height: 15),
         isCast==false?
-        SizedBox(
-          height: size.height * 0.28,
-          child: ListView.builder(
-            itemCount: 10,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: MovieWidget(
-                    width: size.width * 0.4,
-                    height: size.height * 0.28,
-                    link:
-                        'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/ngpLhUccj6mlvAVpiIa7jUcFxhT.jpg',
-                    rating: '9.5',
-                    color: Colors.orange,
+        // display list of Movies
+        Obx(()=>
+           SizedBox(
+            height: size.height * 0.28,
+            child: ListView.builder(
+              itemCount:movie!.value.results!.isNotEmpty? movie!.value.results!.length:movie!.value.initial!.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: GestureDetector(
+                    onTap: () {
+                      print(movie!.value.results![index].title);
+                      Get.to(() => MovieDetale(imageLink:imagebase+movie!.value.results![index].posterPath.toString()));
+                    },
+                    child: MovieWidget(
+                      width: size.width * 0.4,
+                      height: size.height * 0.28,
+                      link:movie!.value.results!.isNotEmpty? movie!.value.results![index].posterPath==null?
+                      'https://www.kuleuven.be/communicatie/congresbureau/fotos-en-afbeeldingen/no-image.png/image':
+                          imagebase+movie!.value.results![index].posterPath.toString():movie!.value.initial![index],
+                      rating:movie!.value.results!.isNotEmpty?movie!.value.results![index].voteAverage??'0':'0',
+                      color: Colors.orange,
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ):Container(
+        ):
+        // display list of Movies
+        Container(
           height: size.height * 0.15,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,

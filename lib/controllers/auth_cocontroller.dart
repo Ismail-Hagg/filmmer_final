@@ -11,6 +11,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../helper/constants.dart';
 import '../models/user_model.dart';
+import '../services/firestore_service.dart';
+import '../storage_local/user_data.dart';
 
 class AuthController extends GetxController {
   final Rxn<User> _user = Rxn<User>();
@@ -40,10 +42,10 @@ class AuthController extends GetxController {
   void googleSignInMethod() async {
     count.value = 1;
     try {
-      //count.value = 1;
       final dynamic googleUser = await _googleSignIn.signIn() ?? '';
       if (googleUser == '') {
-        print('failed');
+        Get.snackbar('Aborted','',
+          backgroundColor: lightColor);
         count.value = 0;
       } else {
         GoogleSignInAuthentication authy = await googleUser!.authentication;
@@ -51,12 +53,7 @@ class AuthController extends GetxController {
         final AuthCredential credential = GoogleAuthProvider.credential(
             idToken: authy.idToken, accessToken: authy.accessToken);
         await _auth.signInWithCredential(credential).then((user) async => {
-              count.value = 0,
-              email = '',
-              password = '',
-              name = '',
-              update()
-              // saveUser(user),
+              saveUser(user),
             });
       }
     } on FirebaseAuthException catch (e) {
@@ -84,13 +81,8 @@ class AuthController extends GetxController {
             .createUserWithEmailAndPassword(
                 email: email.toString(), password: password.toString())
             .then((user) async => {
-                  //saveUser(user),
+                  saveUser(user),
                   Get.offAll(() => ControllScreen()),
-                  count.value = 0,
-                  email = '',
-                  password = '',
-                  name = '',
-                  update()
                 });
       } on FirebaseAuthException catch (i) {
         Get.snackbar('error', i.code.toString(),
@@ -112,11 +104,9 @@ class AuthController extends GetxController {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((user) async => {
-                count.value = 0,
-                email = '',
-                password = '',
-                name = '',
-                update()
+                FireStoreService().getCurrentUser(user.user!.uid).then((value) async{
+                  setUser(UserModel.fromMap(value.data() as Map<dynamic, dynamic>));
+                })
               });
     } on FirebaseAuthException catch (e) {
       Get.snackbar('error', e.toString(), snackPosition: SnackPosition.BOTTOM);
@@ -125,12 +115,15 @@ class AuthController extends GetxController {
       Get.snackbar('error', e.toString(), snackPosition: SnackPosition.BOTTOM);
       count.value = 0;
     }
-  }
+  } 
 
   //signout function
   Future<void> signOut() async {
     _auth.signOut();
+    _googleSignIn.signOut();
+    UserData().deleteUser;
     update();
+    Get.offAll(() => ControllScreen());
   }
 
   // controlls the switching of obscure text on and off
@@ -155,7 +148,17 @@ class AuthController extends GetxController {
       update();
     }
   }
+  void setUser(UserModel user) async {
+    await UserData().setUser(user);
+    count.value = 0;
+    name = '';
+    email = '';
+    password = '';
+    _image = null;
+     update();
+  }
 
+    // save user data locally and in firestore
     void saveUser(UserCredential user) async {
     UserModel model = UserModel(
       userId: user.user!.uid,
@@ -172,12 +175,7 @@ class AuthController extends GetxController {
               ? false:true
     );
 
-    //await FirestoreUser().addUsers(model);
-    // if (model.isLocal) {
-    //   model.pic = img;
-    // }
-    // setUser(model);
-    //model.isLocal=false;
-    //count.value=0;
+    await FireStoreService().addUsers(model);
+     setUser(model);
   }
 }
