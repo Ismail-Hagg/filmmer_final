@@ -3,7 +3,7 @@ import 'package:filmmer_final/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../models/movie_model.dart';
+import '../models/movie_result_model.dart';
 import 'custom_text.dart';
 
 class MovieWidget extends StatelessWidget {
@@ -28,7 +28,7 @@ class MovieWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(width: 2, color: color??Colors.transparent),
                     image: DecorationImage(
-                      image: link![0]=='h'? CachedNetworkImageProvider(
+                      image: link![0]=='h'? NetworkImage(
                         link.toString()
                       ) :AssetImage(link.toString()) as ImageProvider,
                       fit: BoxFit.cover,

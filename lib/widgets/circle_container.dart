@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:filmmer_final/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,10 @@ class CircleContainer extends StatelessWidget {
   final double? spaceUp;
   final Widget? child;
   final String? path;
+  final String link;
+  final BoxFit? fit;
+  final bool? isLocal;
+  final bool? def;
   final DecorationImage? image;
   const CircleContainer(
       {Key? key,
@@ -41,7 +47,7 @@ class CircleContainer extends StatelessWidget {
       this.weightUp,
       this.weightDown,
       this.flowUp,
-      this.flowDown, this.spaceUp, this.child, this.path, this.image})
+      this.flowDown, this.spaceUp, this.child, this.path, required this.link, this.fit, this.isLocal, this.def, this.image, })
       : super(key: key);
 
   @override
@@ -52,31 +58,42 @@ class CircleContainer extends StatelessWidget {
           height: height,
           width: width,
           decoration: BoxDecoration(
-             image: image,
+             image: image??DecorationImage(
+              image:isLocal==false?NetworkImage(link.toString()):
+              link!=''? link[0]=='a'?
+              AssetImage(link.toString()) as ImageProvider:FileImage(File(link.toString())): AssetImage('assets/images/google.jpg') ,
+              fit: fit,
+             ),
             shape: BoxShape.circle,
             color: color ?? Colors.transparent,
             border: Border.all(
                 color: borderColor ?? Colors.transparent,
                 width: borderWidth ?? 0.0),
           ),
-          child: child??Container(),
+          child: child??Container(), 
         ),
         SizedBox(height: spaceUp??0.0,),
-        textUp!=null? CustomText(
-          text: textUp,
-          size: sizeUp,
-          color: colorUp,
-          flow: flowUp,
-          maxline: maxUp,
-          weight:weightUp,
+        textUp!=null? Align(
+          alignment: Alignment.center,
+          child: CustomText(
+            text: textUp,
+            size: sizeUp,
+            color: colorUp,
+            flow: flowUp,
+            maxline: maxUp,
+            weight:weightUp,
+          ),
         ):Container(),
-        textDown!=null? CustomText(
-          text: textDown,
-          size: sizeDown,
-          color: colorDown,
-          flow: flowDown,
-          maxline: maxDown,
-          weight:weightDown,
+        textDown!=null? Align(
+          alignment: Alignment.center,
+          child: CustomText(
+            text: textDown,
+            size: sizeDown,
+            color: colorDown,
+            flow: flowDown,
+            maxline: maxDown,
+            weight:weightDown,
+          ),
         ):Container(),
       ],
     );

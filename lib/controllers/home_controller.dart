@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../helper/constants.dart';
-import '../models/movie_model.dart';
+import '../models/cast_model.dart';
+import '../models/movie_detale_model.dart';
+import '../models/movie_result_model.dart';
+import '../models/recomended_model.dart';
+import '../models/result_model.dart';
+import '../models/trailer_model.dart';
+import '../screens/movie_detale_screen.dart';
+import '../screens/test_screen.dart';
 import '../services/home_screen_service.dart';
 
 class HomeController extends GetxController {
@@ -47,6 +54,12 @@ class HomeController extends GetxController {
   ]));
   Rx<HomeTopMovies> get topRatedShows => _topRatedShows;
 
+  final Rx<MovieDetaleModel> _movied = Rx(MovieDetaleModel());
+  Rx<MovieDetaleModel> get movied => _movied;
+
+  TrailerModel _trailer=TrailerModel();
+  TrailerModel get trailer => _trailer;
+
   var count=0.obs;
 
   @override
@@ -58,6 +71,7 @@ class HomeController extends GetxController {
     
   }
 
+  //fetch data from api
   load() async {
     getUpcoming();
     getpopularMovies();
@@ -95,6 +109,90 @@ class HomeController extends GetxController {
     await FirstPageService().getHomeTopMovies(topTv).then((value) => {
           _topRatedShows.value = value,
         });
+  }
+
+  //navigate to the detale screen
+  navigatoToDetale(Results? res) async {
+    _movied.value = MovieDetaleModel(
+      id: res!.id,
+      posterPath: res.posterPath,
+      overview: res.overview,
+      voteAverage: double.parse(res.voteAverage.toString()),
+      title: res.title,
+      isShow: res.isShow,
+      runtime: 0,
+      productionCountries: null,
+      genres: null,
+      releaseDate: res.releaseDate,
+      cast: CastModel(cast: [
+        Cast(
+          id: 0, 
+          name: 'Actor',
+          profilePath: 'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+          character: 'character',
+          creditId: 'id'
+        ),
+        Cast(
+          id: 0, 
+          name: 'Actor',
+          profilePath: 'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+          character: 'character',
+          creditId: 'id'
+        ),
+        Cast(
+          id: 0, 
+          name: 'Actor',
+          profilePath: 'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+          character: 'character',
+          creditId: 'id'
+        ),
+        Cast(
+          id: 0,
+          name: 'Actor',
+          profilePath: 'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+          character: 'character',
+          creditId: 'id'
+        ),
+        Cast(
+          id: 0,
+          name: 'Actor',
+          profilePath: 'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+          character: 'character',
+          creditId: 'id'
+        )
+      ]),
+      recomendation: RecomendationModel(
+        results: [
+          Results(
+            id: 0,
+            posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+            voteAverage:0.01.toString()
+          ),
+           Results(
+            id: 0,
+            posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+            voteAverage:0.01.toString()
+          ),
+           Results(
+            id: 0,
+            posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+            voteAverage:0.01.toString()
+          ),
+           Results(
+            id: 0,
+            posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+            voteAverage:0.01.toString()
+          ),
+           Results(
+            id: 0,
+            posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+            voteAverage:0.01.toString()
+          )
+        ]
+      )
+    );
+    // update();
+    Get.to(() => MovieDetale());
   }
 
 

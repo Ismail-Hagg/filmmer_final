@@ -53,7 +53,7 @@ class AuthController extends GetxController {
         final AuthCredential credential = GoogleAuthProvider.credential(
             idToken: authy.idToken, accessToken: authy.accessToken);
         await _auth.signInWithCredential(credential).then((user) async => {
-              saveUser(user),
+              saveUser(user,true),
             });
       }
     } on FirebaseAuthException catch (e) {
@@ -81,7 +81,7 @@ class AuthController extends GetxController {
             .createUserWithEmailAndPassword(
                 email: email.toString(), password: password.toString())
             .then((user) async => {
-                  saveUser(user),
+                  saveUser(user,false),
                   Get.offAll(() => ControllScreen()),
                 });
       } on FirebaseAuthException catch (i) {
@@ -159,20 +159,18 @@ class AuthController extends GetxController {
   }
 
     // save user data locally and in firestore
-    void saveUser(UserCredential user) async {
+    void saveUser(UserCredential user,bool social) async {
     UserModel model = UserModel(
       userId: user.user!.uid,
       email: user.user?.email as String,
-      name: name == '' ? user.user?.displayName as String : name,
-      pic: name == ''
-          ? user.user?.photoURL as String
+      name: social==true? user.user?.displayName as String : name,
+      pic: social==true?
+          user.user?.photoURL as String
           : _image == null
-              ? 'default'
+              ? 'assets/images/placeholder.jpg'
               : path.toString(),
-      isLocal: name == ''
-          ? false
-          : _image == null
-              ? false:true
+      isLocal: !social
+         
     );
 
     await FireStoreService().addUsers(model);

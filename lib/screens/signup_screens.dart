@@ -55,10 +55,10 @@ class SignUpScreen extends StatelessWidget {
                           builder:(controller)=> GestureDetector(
                             onTap:()=>controller.openImagePicker(),
                             child: CircleContainer(
+                              link:'',
                               image:controller.image==null?
                                const DecorationImage(
                                 image: AssetImage('assets/images/user.png'),
-                               // fit: BoxFit.contain,
                                 scale:0.7
                               ):
                               DecorationImage(

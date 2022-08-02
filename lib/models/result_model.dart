@@ -39,10 +39,10 @@ class Results {
     overview = json['overview'];
     popularity = json['popularity'];
     posterPath = json['poster_path'];
-    releaseDate = json['release_date']??'release Date';
+    releaseDate = json['release_date']??'Year';
     title = json['title'] ?? json['name'];
     video = json['video']??false;
-    voteAverage = json['vote_average']!=null? (json['vote_average']).toString():'0';
+    voteAverage = json['vote_average']!=null? (json['vote_average']).toStringAsFixed(1):'0';
     voteCount = json['vote_count'];
     isShow = json['first_air_date']!=null?true:false;
   }
