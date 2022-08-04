@@ -50,7 +50,6 @@ class MovieDetaleController extends GetxController {
     } catch (e) {
       print(e.toString());
     }
-    print('api ready to go');
     update();
   }
 }

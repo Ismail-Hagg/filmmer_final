@@ -38,6 +38,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body:  ListView(
+        physics: const BouncingScrollPhysics(),
         children: [
           ContentScroll(
             title: 'Upcoming Movies',

@@ -12,6 +12,7 @@ import '../models/trailer_model.dart';
 import '../screens/movie_detale_screen.dart';
 import '../screens/test_screen.dart';
 import '../services/home_screen_service.dart';
+import 'movie_detale_controller.dart';
 
 class HomeController extends GetxController {
   final Rx<HomeTopMovies> _coming = Rx(HomeTopMovies(results: [], initial: [
@@ -102,13 +103,19 @@ class HomeController extends GetxController {
   getTopRatedMovies() async {
     await FirstPageService().getHomeTopMovies(top).then((value) => {
           _topRatedMovies.value = value,
+          print(_topRatedMovies.value.results!.length)
         });
   }
 
   getTopRatedShows() async {
-    await FirstPageService().getHomeTopMovies(topTv).then((value) => {
+    try {
+      await FirstPageService().getHomeTopMovies(topTv).then((value) => {
           _topRatedShows.value = value,
+          print(_topRatedShows.value.results!.length)
         });
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   //navigate to the detale screen
@@ -166,36 +173,37 @@ class HomeController extends GetxController {
           Results(
             id: 0,
             posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-            voteAverage:0.01.toString()
+            voteAverage:0.0.toString()
           ),
            Results(
             id: 0,
             posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-            voteAverage:0.01.toString()
+            voteAverage:0.0.toString()
           ),
            Results(
             id: 0,
             posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-            voteAverage:0.01.toString()
+            voteAverage:0.0.toString()
           ),
            Results(
             id: 0,
             posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-            voteAverage:0.01.toString()
+            voteAverage:0.0.toString()
           ),
            Results(
             id: 0,
             posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-            voteAverage:0.01.toString()
+            voteAverage:0.0.toString()
           )
         ]
       )
     );
     // update();
-    Get.to(() => MovieDetale());
+    Get.create(() =>(MovieDetaleController()),permanent: false);
+    Get.to(() => MovieDetale(),preventDuplicates: false);
   }
 
 
 }
 
-
+ 

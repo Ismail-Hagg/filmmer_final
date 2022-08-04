@@ -5,6 +5,7 @@ import 'package:shape_of_view_null_safe/shape_of_view_null_safe.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/movie_detale_controller.dart';
 import '../helper/constants.dart';
+import '../helper/countries.dart';
 import '../widgets/content_scroll.dart';
 import '../widgets/custom_text.dart';
 
@@ -22,7 +23,7 @@ class MovieDetale extends StatelessWidget {
       body: SingleChildScrollView(
         child: 
         GetBuilder<MovieDetaleController>(
-          init: Get.put(MovieDetaleController()),
+          init: Get.find<MovieDetaleController>(),
           builder:(controller)=> 
           
              Column(children: [
@@ -152,7 +153,7 @@ class MovieDetale extends StatelessWidget {
                                 ),
                                 const SizedBox(height:3),
                                 CustomText(
-                                  text: controller.detales.releaseDate!.substring(0,4),
+                                  text:controller.detales.productionCountries==null?'Year': controller.detales.releaseDate!,
                                   color:lightColor,
                                   size: 18,
                                   weight:FontWeight.bold,
@@ -174,7 +175,9 @@ class MovieDetale extends StatelessWidget {
                                 ),
                                 const SizedBox(height:3),
                                 CustomText(
-                                  text:controller.detales.productionCountries!=null? controller.detales.productionCountries![0].name:'Country',
+                                  text:controller.detales.productionCountries==null?'Country':
+                                  controller.detales.originCountry!=''?countries[controller.detales.originCountry]:
+                                  controller.detales.productionCountries![0].name,
                                   color:lightColor,
                                   size: 16,
                                   weight:FontWeight.bold,
@@ -209,6 +212,8 @@ class MovieDetale extends StatelessWidget {
                       )
                     ),
                   ),
+                  controller.detales.overview==''?
+                  Container():
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: Container(
@@ -222,6 +227,8 @@ class MovieDetale extends StatelessWidget {
                       ),
                     ),
                   ),
+                  controller.detales.cast!.cast!.isEmpty?
+                  Container():
                   Container(
                     child: ContentScroll(
                       isCast: true,
@@ -230,6 +237,8 @@ class MovieDetale extends StatelessWidget {
                       detale: controller.detales
                     ),
                   ),
+                  controller.detales.recomendation!.results!.isEmpty?
+                  Container():
                   Padding(
                     padding: const EdgeInsets.only(bottom:12.0),
                     child: Container(

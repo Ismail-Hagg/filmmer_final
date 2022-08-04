@@ -20,6 +20,7 @@ class MovieDetaleModel {
   String? title;
   double? voteAverage;
   bool? isShow;
+  String? originCountry;
   CastModel? cast;
   RecomendationModel? recomendation;
 
@@ -39,6 +40,7 @@ class MovieDetaleModel {
       this.title,
       this.voteAverage,
       this.isShow,
+      this.originCountry,
       this.cast,
       this.recomendation});
 
@@ -47,7 +49,7 @@ class MovieDetaleModel {
     if (json['genres'] != null) {
       genres = <Genres>[];
       json['genres'].forEach((v) {
-        genres!.add( Genres.fromJson(v));
+        genres!.add(Genres.fromJson(v));
       });
     }
     id = json['id'];
@@ -57,13 +59,21 @@ class MovieDetaleModel {
     if (json['production_companies'] != null) {
       json['production_companies'].forEach((v) {});
     }
-    if (json['production_countries'] != null) {
+    if (json['production_countries'] != null&&json['production_countries'].length!=0) {
       productionCountries = <ProductionCountries>[];
       json['production_countries'].forEach((v) {
-        productionCountries!.add( ProductionCountries.fromJson(v));
+        productionCountries!.add(ProductionCountries.fromJson(v));
       });
+    }else{
+      productionCountries = <ProductionCountries>[
+        ProductionCountries(name:'UnKnown')
+      ];
     }
-    releaseDate = json['release_date'] ?? json['first_air_date'];
+    releaseDate = json['release_date'] != null &&json['release_date']!=''
+        ? json['release_date'].substring(0, 4)
+        : json['first_air_date'] != null &&json['first_air_date']!=''
+            ? json['first_air_date'].substring(0, 4)
+            : 'Unknown';
     runtime = json['runtime'] == null
         ? json['seasons'][0]['season_number'] == 0
             ? json['seasons'].length - 1
@@ -72,7 +82,7 @@ class MovieDetaleModel {
     if (json['spoken_languages'] != null) {
       spokenLanguages = <SpokenLanguages>[];
       json['spoken_languages'].forEach((v) {
-        spokenLanguages!.add( SpokenLanguages.fromJson(v));
+        spokenLanguages!.add(SpokenLanguages.fromJson(v));
       });
     }
     status = json['status'];
@@ -80,10 +90,12 @@ class MovieDetaleModel {
     title = json['title'] ?? json['name'];
     voteAverage = json['vote_average'] ?? 0.0;
     isShow = json['first_air_date'] == null ? false : true;
+    originCountry =
+        json['origin_country'] == null ? '' : json['origin_country'][0];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['adult'] = adult;
     if (genres != null) {
       data['genres'] = genres!.map((v) => v.toJson()).toList();
@@ -94,7 +106,7 @@ class MovieDetaleModel {
     data['poster_path'] = posterPath;
     if (productionCountries != null) {
       data['production_countries'] =
-        productionCountries!.map((v) => v.toJson()).toList();
+          productionCountries!.map((v) => v.toJson()).toList();
     }
     data['release_date'] = releaseDate;
     data['runtime'] = runtime;
@@ -102,8 +114,8 @@ class MovieDetaleModel {
       data['spoken_languages'] =
           spokenLanguages!.map((v) => v.toJson()).toList();
     }
-    data['status'] =status;
-    data['tagline'] =tagline;
+    data['status'] = status;
+    data['tagline'] = tagline;
     data['title'] = title;
     data['vote_average'] = voteAverage;
 

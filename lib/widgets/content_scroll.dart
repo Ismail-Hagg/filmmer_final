@@ -70,6 +70,7 @@ class ContentScroll extends StatelessWidget {
                 ? SizedBox(
                     height: size.height * 0.28,
                     child: ListView.builder(
+                      physics: const BouncingScrollPhysics(),
                       itemCount: detale!.recomendation!.results!.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
@@ -111,6 +112,7 @@ class ContentScroll extends StatelessWidget {
                    SizedBox(
                       height: size.height * 0.28,
                       child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
                         itemCount: movie!.value.results!.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
@@ -147,6 +149,7 @@ class ContentScroll extends StatelessWidget {
             Container(
                 height: size.height * 0.2,
                 child: ListView.builder(
+                  physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     itemCount: detale!.cast!.cast!.length,
                     itemBuilder: (context, index) {

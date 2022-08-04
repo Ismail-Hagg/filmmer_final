@@ -19,6 +19,8 @@ class FirstPageService{
       var response = await http.get(url);
       if (response.statusCode==200) {
          result=jsonDecode(response.body);
+      }else{
+        Get.snackbar('Connection Problem','Status Code Not 200');
       }
       return HomeTopMovies.fromJson(result);
     } catch (e) {

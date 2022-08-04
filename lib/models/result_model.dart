@@ -5,7 +5,7 @@ class Results {
   String? originalLanguage;
   String? originalTitle;
   String? overview;
-  double? popularity;
+  String? popularity;
   String? posterPath;
   String? releaseDate;
   String? title;
@@ -37,7 +37,7 @@ class Results {
     originalLanguage = json['original_language'];
     originalTitle = json['original_title']??json['original_name'];
     overview = json['overview'];
-    popularity = json['popularity'];
+    popularity = json['popularity']!=null?(json['popularity'].toString()):'0.0';
     posterPath = json['poster_path'];
     releaseDate = json['release_date']??'Year';
     title = json['title'] ?? json['name'];
@@ -47,7 +47,7 @@ class Results {
     isShow = json['first_air_date']!=null?true:false;
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() { 
     final Map<String, dynamic> data =  Map<String, dynamic>();
     data['backdrop_path'] = backdropPath;
     data['genre_ids'] = genreIds;
