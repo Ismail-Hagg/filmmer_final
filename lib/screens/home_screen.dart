@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/auth_cocontroller.dart';
 import '../controllers/home_controller.dart';
+import '../models/more_search_moving.dart';
 import '../widgets/content_scroll.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/drawer.dart';
+import 'more_search_screen.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -32,7 +34,8 @@ class HomeScreen extends StatelessWidget {
             icon:const Icon(Icons.search),
             splashRadius: 15,
             onPressed: (){
-              Get.find<AuthController>().signOut();
+               Get.find<HomeController>().move=Move(isSearch: true,link: 'link',title:'Search');
+                          Get.to(()=>MoreSearchScreen());
             },
           ) 
         ],
@@ -45,30 +48,35 @@ class HomeScreen extends StatelessWidget {
             isArrow: true,
             isCast:false,
             movie: controller.coming,
+            link: upcoming,
           ),
           ContentScroll(
             title: 'Popular Movies',
             isArrow: true,
             isCast:false,
             movie: controller.popularMovies,
+            link:pop
           ),
           ContentScroll(
             title: 'Popular Shows',
             isArrow: true,
             isCast:false,
             movie: controller.popularShows,
+            link:popularTv
           ),
           ContentScroll(
             title: 'Top Rated Movies',
             isArrow: true,
             isCast:false,
             movie: controller.topRatedMovies,
+            link:top
           ),
           ContentScroll(
             title: 'Top Rated Shows',
             isArrow: true,
             isCast:false,
             movie: controller.topRatedShows,
+            link:topTv
           ),
           const SizedBox(height: 12,)
         ]

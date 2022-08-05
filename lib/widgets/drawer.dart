@@ -1,11 +1,15 @@
 import 'dart:io';
 
+import 'package:filmmer_final/controllers/auth_cocontroller.dart';
 import 'package:filmmer_final/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../controllers/home_controller.dart';
 import '../helper/constants.dart';
 import '../storage_local/user_data.dart';
 import 'circle_container.dart';
+import 'custom_text.dart';
 
 
 class Draw extends StatelessWidget {
@@ -19,7 +23,7 @@ class Draw extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               header(size),
-             // const DrawItems()
+               DrawItems()
             ],
           ),
     );
@@ -112,5 +116,13 @@ Widget header(size){
         ),
       ),
     ),
+  );
+  
+}
+
+Widget DrawItems(){
+  return ListTile(
+    title: const CustomText(text: 'Sign Out',),
+    onTap: () =>Get.find<AuthController>().signOut()
   );
 }

@@ -1,8 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:filmmer_final/models/more_search_moving.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../helper/constants.dart';
+import '../models/actor_model.dart';
 import '../models/cast_model.dart';
 import '../models/movie_detale_model.dart';
 import '../models/movie_result_model.dart';
@@ -15,6 +16,11 @@ import '../services/home_screen_service.dart';
 import 'movie_detale_controller.dart';
 
 class HomeController extends GetxController {
+
+  ActorModel _actor = ActorModel();
+  ActorModel get actor => _actor;
+  
+  Move move = Move();
   final Rx<HomeTopMovies> _coming = Rx(HomeTopMovies(results: [], initial: [
     'assets/images/placeholder.jpg',
     'assets/images/placeholder.jpg',
@@ -66,10 +72,7 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-
     load();
-
-    
   }
 
   //fetch data from api
@@ -111,7 +114,6 @@ class HomeController extends GetxController {
     try {
       await FirstPageService().getHomeTopMovies(topTv).then((value) => {
           _topRatedShows.value = value,
-          print(_topRatedShows.value.results!.length)
         });
     } catch (e) {
       print(e.toString());
@@ -200,7 +202,7 @@ class HomeController extends GetxController {
     );
     // update();
     Get.create(() =>(MovieDetaleController()),permanent: false);
-    Get.to(() => MovieDetale(),preventDuplicates: false);
+    Get.to(() => MovieDetale(tag:res.title.toString()),preventDuplicates: false);
   }
 
 

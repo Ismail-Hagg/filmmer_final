@@ -1,3 +1,4 @@
+import 'package:filmmer_final/screens/trailer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shape_of_view_null_safe/shape_of_view_null_safe.dart';
@@ -10,8 +11,8 @@ import '../widgets/content_scroll.dart';
 import '../widgets/custom_text.dart';
 
 class MovieDetale extends StatelessWidget {
-  
-   MovieDetale({Key? key}) : super(key: key);
+  final String tag;
+   MovieDetale({Key? key, required this.tag}) : super(key: key);
 
 
 
@@ -25,12 +26,10 @@ class MovieDetale extends StatelessWidget {
         GetBuilder<MovieDetaleController>(
           init: Get.find<MovieDetaleController>(),
           builder:(controller)=> 
-          
              Column(children: [
               Container(
                 height: size.height * 0.44,
                 child: Stack(children: [
-                 
                      Container(
                       height: size.height * 0.4,
                       child: ShapeOfView(
@@ -56,13 +55,7 @@ class MovieDetale extends StatelessWidget {
                       padding: const EdgeInsets.all(10),
                       elevation: 12,
                       onPressed: () {
-                        // if (controller.count.value==0) {
-                        //   controller.count.value=1;
-                        // } else {
-                        //   controller.count.value=0;
-                        // }
-                        print(controller.detales.releaseDate);
-                        controller.loadDetales(controller.detales);
+                        Get.to(()=>TrailerScreen(),);
                       },
                       shape: const CircleBorder(),
                       fillColor: whiteColor, 
@@ -81,7 +74,8 @@ class MovieDetale extends StatelessWidget {
                                 splashRadius: 15,
                                 icon: const Icon(Icons.add,
                                     color: whiteColor, size: 30),
-                                onPressed: () {}),
+                                onPressed: () {
+                                }),
                              CustomText(
                                 text: controller.detales.voteAverage!.toStringAsFixed(1), color: lightColor, size: 26)
                           ]),
@@ -119,22 +113,25 @@ class MovieDetale extends StatelessWidget {
                     maxline: 2,
                     weight: FontWeight.w500),
               ),
-              Container(
-                  height: size.height * 0.05,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount:controller.detales.genres!=null? controller.detales.genres!.length:3,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return  CustomText(
-                          text: controller.detales.genres==null?
-                           'Genre':controller.detales.genres![index].name, color: lightColor, size: 16);
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const CustomText(
-                          text: ' | ', color: lightColor, size: 16);
-                    },
-                  )),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Container(
+                    height: size.height * 0.05,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount:controller.detales.genres!=null? controller.detales.genres!.length:3,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return  CustomText(
+                            text: controller.detales.genres==null?
+                             'Genre':controller.detales.genres![index].name, color: lightColor, size: 16);
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const CustomText(
+                            text: ' | ', color: lightColor, size: 16);
+                      },
+                    )),
+              ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 12),
                     child: Container(

@@ -1,11 +1,16 @@
 import 'package:filmmer_final/models/cast_model.dart';
+import 'package:filmmer_final/models/more_search_moving.dart';
 import 'package:filmmer_final/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../controllers/actor_controller.dart';
 import '../controllers/home_controller.dart';
+import '../controllers/movie_detale_controller.dart';
 import '../helper/constants.dart';
 import '../models/movie_detale_model.dart';
 import '../models/movie_result_model.dart';
+import '../screens/actor_screen.dart';
+import '../screens/more_search_screen.dart';
 import '../screens/movie_detale_screen.dart';
 import '../screens/test_screen.dart';
 import 'circle_container.dart';
@@ -53,7 +58,8 @@ class ContentScroll extends StatelessWidget {
                     width: (size.width - 30) * 0.1,
                     child: GestureDetector(
                         onTap: () {
-                          Get.to(()=>Testing(thing:'thing'));
+                          Get.find<HomeController>().move=Move(isSearch: false,link: link,title:title);
+                          Get.to(()=>MoreSearchScreen());
                         },
                         child: const Icon(Icons.arrow_forward,
                             color: Colors.white, size: 30)),
@@ -109,6 +115,7 @@ class ContentScroll extends StatelessWidget {
                     ),
                   )
                 : Obx(()=>
+                movie!.value.results!.isNotEmpty?
                    SizedBox(
                       height: size.height * 0.28,
                       child: ListView.builder(
@@ -142,7 +149,7 @@ class ContentScroll extends StatelessWidget {
                           );
                         },
                       ),
-                    ),
+                    ):const Center(child: CircularProgressIndicator(color: lightColor),)
                 )
             :
             // display list of Cast
@@ -156,7 +163,25 @@ class ContentScroll extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                           if (detale!.cast!.cast![index].profilePath!=null) {
+                             if (detale!.cast!.cast![index].name=='Actor') {
+                               print('not yet');
+                             }else{
+                              Get.find<HomeController>().actor.name=detale!.cast!.cast![index].name;
+                              Get.find<HomeController>().actor.pic=imagebase+detale!.cast!.cast![index].profilePath.toString();
+                              Get.find<HomeController>().actor.age=0;
+                              Get.find<HomeController>().actor.id=detale!.cast!.cast![index].id.toString();
+                              Get.find<HomeController>().actor.bio=null;
+                              Get.find<HomeController>().actor.movies=null;
+                              Get.find<HomeController>().actor.shows=null;
+                              Get.create(() =>(ActorController()),permanent: false);
+                              Get.to(() => ActorScreen(),preventDuplicates: false);
+                             }
+                           } else {
+                             print('no info');
+                           }
+                          },
                           child: Container(
                             width:size.width*0.25,
                             child: CircleContainer(

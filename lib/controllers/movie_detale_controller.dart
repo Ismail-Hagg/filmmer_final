@@ -1,9 +1,13 @@
 import 'package:filmmer_final/controllers/home_controller.dart';
+import 'package:filmmer_final/helper/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../models/actor_model.dart';
 import '../models/movie_detale_model.dart';
 import '../models/result_model.dart';
 import '../models/trailer_model.dart';
+import '../screens/actor_screen.dart';
 import '../services/home_screen_service.dart';
 
 class MovieDetaleController extends GetxController {
@@ -12,6 +16,11 @@ class MovieDetaleController extends GetxController {
 
   TrailerModel _trailer = TrailerModel();
   TrailerModel get trailer => _trailer;
+
+  ActorModel _actor = ActorModel();
+  ActorModel get actor => _actor;
+
+
 
   @override
   void onInit() {
@@ -50,6 +59,16 @@ class MovieDetaleController extends GetxController {
     } catch (e) {
       print(e.toString());
     }
+
     update();
   }
+
+  goToActorPage(String name,String pic){
+    _actor.name=name;
+    _actor.pic=pic;
+    _actor.age=0;
+    Get.to(()=>ActorScreen());
+  }
+
+
 }
