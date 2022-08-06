@@ -9,8 +9,9 @@ class ActorModel{
   List<Results>? movies;
   List<Results>? shows;
   List<Awards>? awards;
+  String? imdb;
 
-  ActorModel({this.id,this.name, this.pic, this.bio, this.age, this.movies, this.shows, this.awards});
+  ActorModel({this.id,this.name, this.pic, this.bio, this.age, this.movies, this.shows, this.awards,this.imdb});
 
 }
 

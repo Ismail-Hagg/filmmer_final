@@ -38,10 +38,11 @@ dependencies:
   get: ^4.6.5
   google_sign_in: ^5.4.0
   http: ^0.13.4
+  pod_player: ^0.0.8
+  search_page: ^2.0.0+1
   shape_of_view_null_safe: ^2.0.0
   shared_preferences: ^2.0.15
-  youtube_player_flutter: ^8.1.0
-  youtube_player_iframe: ^2.3.0
+  youtube: ^1.0.1
 
 dev_dependencies:
   flutter_lints: ^2.0.0

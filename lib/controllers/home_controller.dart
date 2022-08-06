@@ -19,6 +19,8 @@ class HomeController extends GetxController {
 
   ActorModel _actor = ActorModel();
   ActorModel get actor => _actor;
+
+  
   
   Move move = Move();
   final Rx<HomeTopMovies> _coming = Rx(HomeTopMovies(results: [], initial: [
@@ -64,7 +66,7 @@ class HomeController extends GetxController {
   final Rx<MovieDetaleModel> _movied = Rx(MovieDetaleModel());
   Rx<MovieDetaleModel> get movied => _movied;
 
-  TrailerModel _trailer=TrailerModel();
+  final TrailerModel _trailer=TrailerModel();
   TrailerModel get trailer => _trailer;
 
   var count=0.obs;

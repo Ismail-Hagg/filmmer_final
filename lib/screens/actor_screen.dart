@@ -30,11 +30,30 @@ class ActorScreen extends StatelessWidget {
                   children: [
                     ShapeOfView(
                       elevation: 10,
-                      child: Container(color: lightColor.withOpacity(0.5)),
                       shape: ArcShape(
                           direction: ArcDirection.Inside,
                           height: 30,
                           position: ArcPosition.Bottom),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                        begin: Alignment.bottomRight,
+                        end: Alignment.bottomLeft,
+                        stops: [
+                          0.1,
+                          0.4,
+                          0.6,
+                          0.9,
+                        ],
+                        colors: [
+                          Color.fromARGB(255, 250, 194, 111),
+                          Color.fromARGB(255, 228, 140, 25),
+                          Color.fromARGB(255, 216, 155, 74),
+                          Color.fromARGB(179, 230, 177, 3),
+                        ],
+                      )
+                        )
+                      ),
                     ),
                     Positioned(
                       right: 0,
@@ -173,17 +192,16 @@ class ActorScreen extends StatelessWidget {
                             physics: const BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
                               return Container(
-                                //color:Colors.green,
                                 width: size.width * 0.3,
                                 child: Column(children: [
                                   CustomText(
-                                      text: '2', size: 16, color: Colors.white),
+                                      text: controller.awardMap[index]['count'].toString(), size: 16, color: Colors.white),
                                   const SizedBox(
                                     height: 5,
                                   ),
                                   CustomText(
                                     maxline: 2,
-                                    text: 'acadimy awards thingy',
+                                    text: controller.awardMap[index]['awardName'].toString(),
                                     size: 14,
                                     color: lightColor,
                                     flow: TextOverflow.ellipsis,
@@ -198,7 +216,7 @@ class ActorScreen extends StatelessWidget {
                                 color: Colors.white,
                               );
                             },
-                            itemCount: 5)),
+                            itemCount: controller.awardMap.length)),
                   ),
                   Container(
                     height: (size.height * 0.32) - 36,

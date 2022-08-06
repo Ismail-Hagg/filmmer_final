@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 
 import '../controllers/home_controller.dart';
 import '../helper/constants.dart';
+import '../screens/favorites_screen.dart';
+import '../screens/watchlist_screen.dart';
 import '../storage_local/user_data.dart';
 import 'circle_container.dart';
 import 'custom_text.dart';
@@ -58,37 +60,23 @@ Widget header(size){
           );
             } else if (snapshot.connectionState==ConnectionState.done) {
                  
-              return GestureDetector(
-                onTap:(){
-                  print(snapshot.data!.pic[0]);
-                },
-                child: CircleContainer(
-                          borderColor:lightColor,
-                          borderWidth:2,
-                          height:size.height*0.15,
-                          width:size.height*0.15,
-                          textUp: snapshot.data!.name,
-                          textDown: snapshot.data!.email,
-                          sizeUp: 20,
-                          sizeDown: 14, 
-                          colorUp:Colors.white,
-                          colorDown:lightColor,
-                          spaceUp:size.height*0.01,
-                          fit: BoxFit.cover,
-                          // image: DecorationImage(
-                          //   fit: BoxFit.cover,
-                          //   image:
-                          //   snapshot.data!.isLocal==false?
-                          //   NetworkImage(snapshot.data!.pic):
-                          //   snapshot.data!.pic=='default'?
-                          //   const AssetImage('assets/images/placeholder.jpg') as ImageProvider:
-                          //   FileImage(File(snapshot.data!.pic.toString()))
-                          // ),
-                          isLocal:snapshot.data!.isLocal,
-                          def:snapshot.data!.pic=='default'?true :false,
-                          link: snapshot.data!.pic.toString()
-                        ),
-              );
+              return CircleContainer(
+                        borderColor:lightColor,
+                        borderWidth:2,
+                        height:size.height*0.15,
+                        width:size.height*0.15,
+                        textUp: snapshot.data!.name,
+                        textDown: snapshot.data!.email,
+                        sizeUp: 20,
+                        sizeDown: 14, 
+                        colorUp:Colors.white,
+                        colorDown:lightColor,
+                        spaceUp:size.height*0.01,
+                        fit: BoxFit.cover,
+                        isLocal:snapshot.data!.isLocal,
+                        def:snapshot.data!.pic=='default'?true :false,
+                        link: snapshot.data!.pic.toString()
+                      );
             } else {
                return CircleContainer(
                 link: '',
@@ -103,10 +91,6 @@ Widget header(size){
             colorUp:Colors.white,
             colorDown:lightColor,
             spaceUp:size.height*0.01,
-            // image: const DecorationImage(
-            //   fit: BoxFit.cover,
-            //   image:AssetImage('assets/images/placeholder.jpg')
-            // )
             child:const Icon(Icons.error,color: lightColor));
           
             } 
@@ -121,8 +105,38 @@ Widget header(size){
 }
 
 Widget DrawItems(){
-  return ListTile(
-    title: const CustomText(text: 'Sign Out',),
-    onTap: () =>Get.find<AuthController>().signOut()
-  );
+  return Container(
+      padding: const EdgeInsets.all(20),
+      child: Wrap(
+        runSpacing: 16,
+        children: [
+          ListTile(
+            leading:const Icon(Icons.list,color: lightColor,),
+            title: const CustomText(text: 'My WatchList',size: 16,),
+            onTap: (){
+              Get.back();
+              Get.to(()=> WatchList());
+            },
+          ),
+           ListTile(
+            leading:const Icon(Icons.favorite,color: lightColor),
+            title: const CustomText(text: 'My Favorites',size: 16,),
+            onTap: (){
+               Get.back();
+              Get.to(()=> FavoritesScreen());
+            },
+          ),
+          
+           ListTile(
+            leading:const Icon(Icons.settings,color: lightColor),
+            title: const CustomText(text: 'Settings',size: 16,),
+            onTap: (){ 
+              Get.back();
+              Get.find<AuthController>().signOut();
+              //Get.to(()=>SettingsScreen());
+            },
+          )
+        ],
+      ),
+    );
 }

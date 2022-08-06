@@ -9,16 +9,16 @@ class TrailerModel {
     if (json['results'] != null) {
       results = <Trail>[];
       json['results'].forEach((v) {
-        results!.add(new Trail.fromJson(v));
+        results!.add(Trail.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    if (this.results != null) {
-      data['results'] = this.results!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data =  Map<String, dynamic>();
+    data['id'] = id;
+    if (results != null) {
+      data['results'] = results!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -63,16 +63,16 @@ class Trail {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['iso_639_1'] = this.iso6391;
-    data['iso_3166_1'] = this.iso31661;
-    data['name'] = this.name;
-    data['key'] = this.key;
-    data['site'] = this.site;
-    data['size'] = this.size;
-    data['type'] = this.type;
-    data['official'] = this.official;
-    data['published_at'] = this.publishedAt;
-    data['id'] = this.id;
+    data['iso_639_1'] = iso6391;
+    data['iso_3166_1'] =iso31661;
+    data['name'] =name;
+    data['key'] = key;
+    data['site'] =site;
+    data['size'] =size;
+    data['type'] =type;
+    data['official'] = official;
+    data['published_at'] = publishedAt;
+    data['id'] = id;
     return data;
   }
 }

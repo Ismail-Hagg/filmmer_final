@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 
 import '../models/actor_model.dart';
+import '../models/awards_model.dart';
 import '../models/cast_model.dart';
 import '../models/movie_detale_model.dart';
 import '../models/movie_result_model.dart';
@@ -111,6 +112,24 @@ class FirstPageService{
       print(e.toString());
       Get.snackbar('Connection Problem', e.toString());
       return Actor();
+    }
+  }
+
+  Future<AwardModel> getAwards(String api)async{
+    dynamic result ='';
+    var url = Uri.parse(api);
+    try {
+      var response = await http.get(url);
+      if (response.statusCode==200) {
+        result=jsonDecode(response.body); 
+         
+      }
+
+      return AwardModel.fromJson(result);
+    } catch (e) {
+      print(e.toString());
+      Get.snackbar('Connection Problem', e.toString());
+      return AwardModel(name: 'something went wrong');
     }
   }
 

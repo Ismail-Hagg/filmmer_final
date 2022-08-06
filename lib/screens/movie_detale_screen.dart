@@ -55,12 +55,13 @@ class MovieDetale extends StatelessWidget {
                       padding: const EdgeInsets.all(10),
                       elevation: 12,
                       onPressed: () {
-                        Get.to(()=>TrailerScreen(),);
+                        controller.goToTrailer();
                       },
                       shape: const CircleBorder(),
                       fillColor: whiteColor, 
-                      child:
-                          const Icon(Icons.play_arrow, color: lightColor, size: 60),
+                      child:controller.load==0?
+                          const Center(child: CircularProgressIndicator(color:lightColor),)
+                          :const Icon(Icons.play_arrow, color: lightColor, size: 50),
                     ),
                   ),
                   Align(
@@ -74,8 +75,7 @@ class MovieDetale extends StatelessWidget {
                                 splashRadius: 15,
                                 icon: const Icon(Icons.add,
                                     color: whiteColor, size: 30),
-                                onPressed: () {
-                                }),
+                                onPressed: () =>controller.watch()),
                              CustomText(
                                 text: controller.detales.voteAverage!.toStringAsFixed(1), color: lightColor, size: 26)
                           ]),
@@ -93,9 +93,12 @@ class MovieDetale extends StatelessWidget {
                             },
                             child: const Icon(Icons.arrow_back,color: whiteColor, size: 30),
                           ),
-                          GestureDetector(
-                              onTap: (){},
-                            child: const Icon(Icons.favorite_outline,color: whiteColor, size: 30),
+                          Obx(()=>
+                             GestureDetector(
+                                onTap: ()=>controller.sendObject(),
+                              child: controller.flip.value==0? const Icon(Icons.favorite_outline,color: whiteColor, size: 30):
+                               const Icon(Icons.favorite,color: lightColor, size: 30),
+                            ),
                           )
                         ]
                       ),
