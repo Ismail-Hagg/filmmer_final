@@ -98,36 +98,37 @@ class MoreSearchScreen extends StatelessWidget {
                           ]),
                     ),
                   ),
-                  Container(
-                    height: size.height * 0.83 - size.height * 0.078,
-                    child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Wrap(
-                            direction: Axis.horizontal,
-                            spacing: 2,
-                            runSpacing: 2,
-                            children: List.generate(
-                                controll.model.results!.length, (index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Get.find<HomeController>().navigatoToDetale(
-                                      controll.model.results![index]);
-                                },
-                                child: MovieWidget(
-                                  width: size.width * 0.32,
-                                  height: size.height * 0.25,
-                                  link: controll.model.results![index]
-                                              .posterPath ==
-                                          null
-                                      ? 'https://www.kuleuven.be/communicatie/congresbureau/fotos-en-afbeeldingen/no-image.png/image'
-                                      : imagebase +
-                                          controll
-                                              .model.results![index].posterPath
-                                              .toString(),
-                                  color: lightColor,
-                                ),
-                              );
-                            }))),
+                  Expanded(
+                    child: Container(
+                      child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Wrap(
+                              direction: Axis.horizontal,
+                              spacing: 2,
+                              runSpacing: 2,
+                              children: List.generate(
+                                  controll.model.results!.length, (index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Get.find<HomeController>().navigatoToDetale(
+                                        controll.model.results![index]);
+                                  },
+                                  child: MovieWidget(
+                                    width: size.width * 0.32,
+                                    height: size.height * 0.25,
+                                    link: controll.model.results![index]
+                                                .posterPath ==
+                                            null
+                                        ? 'https://www.kuleuven.be/communicatie/congresbureau/fotos-en-afbeeldingen/no-image.png/image'
+                                        : imagebase +
+                                            controll
+                                                .model.results![index].posterPath
+                                                .toString(),
+                                    color: lightColor,
+                                  ),
+                                );
+                              }))),
+                    ),
                   ),
                 ])
               : Container()),

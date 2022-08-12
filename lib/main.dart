@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'controllers/auth_cocontroller.dart';
+import 'controllers/connectivity_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp().then((val) {
-    Get.put(AuthController());
-  });
+  await Firebase.initializeApp();
+  Get.put(ConnectivityController());
+  Get.put(AuthController());
   runApp(const Filmmer()); 
   
 }

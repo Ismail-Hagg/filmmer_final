@@ -28,10 +28,11 @@ class TrailerController extends GetxController {
     controller.dispose();
     super.onClose();
   }
+
+  //filter out videos that are not trailers
   looping(List<Trail> list) {
     for (var i = 0; i < list.length; i++) {
       if (list[i].type == 'Trailer') {
-        print(list[i].name);
         lst.add(list[i]);
       }
     }
@@ -39,12 +40,12 @@ class TrailerController extends GetxController {
     title = list[list.length - 1].name.toString();
   }
 
+  //change the video
   change(String id, String name) { 
     vid = id;
     title = name;
     controller.changeVideo(  playVideoFrom: PlayVideoFrom.youtube(
                     "https://www.youtube.com/watch?v=$id"));
-    print('done and done');
     update();
   }
 }

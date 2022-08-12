@@ -29,12 +29,14 @@ environment:
 dependencies:
   cached_network_image: ^3.2.1
   cloud_firestore: ^3.4.2
+  connectivity_plus: ^2.3.6
   cupertino_icons: ^1.0.2
   file_picker: ^5.0.0
   firebase_auth: ^3.6.1
   firebase_core: ^1.20.0
   flutter:
     sdk: flutter
+  flutter_swiper: ^1.1.6
   get: ^4.6.5
   google_sign_in: ^5.4.0
   http: ^0.13.4
@@ -42,6 +44,7 @@ dependencies:
   search_page: ^2.0.0+1
   shape_of_view_null_safe: ^2.0.0
   shared_preferences: ^2.0.15
+  sqflite: ^2.0.3+1
   youtube: ^1.0.1
 
 dev_dependencies:

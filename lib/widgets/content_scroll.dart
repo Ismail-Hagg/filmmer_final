@@ -58,8 +58,8 @@ class ContentScroll extends StatelessWidget {
                     width: (size.width - 30) * 0.1,
                     child: GestureDetector(
                         onTap: () {
-                          Get.find<HomeController>().move=Move(isSearch: false,link: link,title:title);
-                          Get.to(()=>MoreSearchScreen());
+                          Get.find<HomeController>()
+                              .goToSearch(false, link.toString(), title);
                         },
                         child: const Icon(Icons.arrow_forward,
                             color: Colors.white, size: 30)),
@@ -96,17 +96,17 @@ class ContentScroll extends StatelessWidget {
                                           .posterPath ==
                                       null
                                   ? 'https://www.kuleuven.be/communicatie/congresbureau/fotos-en-afbeeldingen/no-image.png/image'
-                                  : detale!.recomendation!.results![0].id!=0?
-                                  imagebase +
-                                      detale!.recomendation!.results![index]
-                                          .posterPath
-                                          .toString():
+                                  : detale!.recomendation!.results![0].id != 0
+                                      ? imagebase +
                                           detale!.recomendation!.results![index]
+                                              .posterPath
+                                              .toString()
+                                      : detale!.recomendation!.results![index]
                                           .posterPath
                                           .toString(),
                               rating: detale!.recomendation!.results![index]
                                       .voteAverage ??
-                                  '0.0', 
+                                  '0.0',
                               color: lightColor,
                             ),
                           ),
@@ -114,9 +114,7 @@ class ContentScroll extends StatelessWidget {
                       },
                     ),
                   )
-                : Obx(()=>
-                movie!.value.results!.isNotEmpty?
-                   SizedBox(
+                : Obx(() => SizedBox(
                       height: size.height * 0.28,
                       child: ListView.builder(
                         physics: const BouncingScrollPhysics(),
@@ -149,14 +147,13 @@ class ContentScroll extends StatelessWidget {
                           );
                         },
                       ),
-                    ):const Center(child: CircularProgressIndicator(color: lightColor),)
-                )
+                    ))
             :
             // display list of Cast
             Container(
                 height: size.height * 0.2,
                 child: ListView.builder(
-                  physics: const BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     itemCount: detale!.cast!.cast!.length,
                     itemBuilder: (context, index) {
@@ -164,35 +161,50 @@ class ContentScroll extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: GestureDetector(
                           onTap: () {
-                           if (detale!.cast!.cast![index].profilePath!=null) {
-                             if (detale!.cast!.cast![index].name=='Actor') {
-                               print('not yet');
-                             }else{
-                              Get.find<HomeController>().actor.name=detale!.cast!.cast![index].name;
-                              Get.find<HomeController>().actor.pic=imagebase+detale!.cast!.cast![index].profilePath.toString();
-                              Get.find<HomeController>().actor.age=0;
-                              Get.find<HomeController>().actor.id=detale!.cast!.cast![index].id.toString();
-                              Get.find<HomeController>().actor.bio=null;
-                              Get.find<HomeController>().actor.movies=null;
-                              Get.find<HomeController>().actor.shows=null;
-                              Get.create(() =>(ActorController()),permanent: false);
-                              Get.to(() => ActorScreen(),preventDuplicates: false);
-                             }
-                           } else {
-                             print('no info');
-                           }
+                            if (detale!.cast!.cast![index].profilePath !=
+                                null) {
+                              if (detale!.cast!.cast![index].name == 'Actor') {
+                                print('not yet');
+                              } else {
+                                // Get.find<HomeController>().actor.name=detale!.cast!.cast![index].name;
+                                // Get.find<HomeController>().actor.pic=imagebase+detale!.cast!.cast![index].profilePath.toString();
+                                // Get.find<HomeController>().actor.age=0;
+                                // Get.find<HomeController>().actor.id=detale!.cast!.cast![index].id.toString();
+                                // Get.find<HomeController>().actor.bio=null;
+                                // Get.find<HomeController>().actor.movies=null;
+                                // Get.find<HomeController>().actor.shows=null;
+                                // Get.create(() =>(ActorController()),permanent: false);
+                                // Get.to(() => ActorScreen(),preventDuplicates: false);
+                                Get.find<HomeController>().goToActor(
+                                    detale!.cast!.cast![index].name,
+                                    imagebase +
+                                        detale!.cast!.cast![index].profilePath
+                                            .toString(),
+                                    0,
+                                    detale!.cast!.cast![index].id.toString(),
+                                    null,
+                                    null,
+                                    null);
+                              }
+                            } else {
+                              print('no info');
+                            }
                           },
                           child: Container(
-                            width:size.width*0.25,
+                            width: size.width * 0.25,
                             child: CircleContainer(
                               maxUp: 1,
                               maxDown: 1,
                               isLocal: false,
-                              link:detale!.cast!.cast![index].profilePath!=null?
-                              detale!.cast!.cast![index].name=='Actor'?
-                              detale!.cast!.cast![index].profilePath.toString():
-                              imagebase+detale!.cast!.cast![index].profilePath.toString():
-                              'https://www.kuleuven.be/communicatie/congresbureau/fotos-en-afbeeldingen/no-image.png/image',
+                              link: detale!.cast!.cast![index].profilePath !=
+                                      null
+                                  ? detale!.cast!.cast![index].name == 'Actor'
+                                      ? detale!.cast!.cast![index].profilePath
+                                          .toString()
+                                      : imagebase +
+                                          detale!.cast!.cast![index].profilePath
+                                              .toString()
+                                  : 'https://www.kuleuven.be/communicatie/congresbureau/fotos-en-afbeeldingen/no-image.png/image',
                               textUp: detale!.cast!.cast![index].name,
                               colorUp: lightColor,
                               sizeUp: 15,

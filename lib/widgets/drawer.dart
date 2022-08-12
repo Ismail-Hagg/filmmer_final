@@ -1,13 +1,16 @@
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:filmmer_final/controllers/auth_cocontroller.dart';
 import 'package:filmmer_final/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../controllers/connectivity_controller.dart';
 import '../controllers/home_controller.dart';
 import '../helper/constants.dart';
 import '../screens/favorites_screen.dart';
+import '../screens/settings_page.dart';
 import '../screens/watchlist_screen.dart';
 import '../storage_local/user_data.dart';
 import 'circle_container.dart';
@@ -59,8 +62,8 @@ Widget header(size){
             child:const Center(child: CircularProgressIndicator(color: lightColor,),),
           );
             } else if (snapshot.connectionState==ConnectionState.done) {
-                 
-              return CircleContainer(
+                 if (Get.find<ConnectivityController>().connect != ConnectivityResult.none) {
+                    return CircleContainer(
                         borderColor:lightColor,
                         borderWidth:2,
                         height:size.height*0.15,
@@ -77,6 +80,26 @@ Widget header(size){
                         def:snapshot.data!.pic=='default'?true :false,
                         link: snapshot.data!.pic.toString()
                       );
+                 } else {
+                    return CircleContainer(
+                        borderColor:lightColor,
+                        borderWidth:2,
+                        height:size.height*0.15,
+                        width:size.height*0.15,
+                        textUp: snapshot.data!.name,
+                        textDown: snapshot.data!.email,
+                        sizeUp: 20,
+                        sizeDown: 14, 
+                        colorUp:Colors.white,
+                        colorDown:lightColor,
+                        spaceUp:size.height*0.01,
+                        fit: BoxFit.cover,
+                        isLocal:true,
+                        def:snapshot.data!.pic=='default'?true :false,
+                        link: ''
+                      );
+                 }
+             
             } else {
                return CircleContainer(
                 link: '',
@@ -132,8 +155,7 @@ Widget DrawItems(){
             title: const CustomText(text: 'Settings',size: 16,),
             onTap: (){ 
               Get.back();
-              Get.find<AuthController>().signOut();
-              //Get.to(()=>SettingsScreen());
+              Get.to(()=> Settings());
             },
           )
         ],

@@ -1,92 +1,88 @@
-
+import 'package:filmmer_final/models/upload.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/favourites_controller.dart';
 import '../helper/constants.dart';
+import '../storage_local/local_database.dart';
 import '../widgets/custom_text.dart';
 
 class FavoritesScreen extends StatelessWidget {
   FavoritesScreen({Key? key}) : super(key: key);
+  final dbHelper = DatabaseHelper.instance;
 
-  //final FavoritesController controll = Get.put(FavoritesController());
+  final FavoritesController controll = Get.put(FavoritesController());
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: primaryColor,
+      appBar: AppBar(
         backgroundColor: primaryColor,
-        appBar: AppBar(
-          backgroundColor: primaryColor,
-          // centerTitle: true,
-          elevation: 0,
-          title: const CustomText(text: 'Favorites', color: lightColor),
-          actions: [
-            IconButton(
-              icon: Obx(() => CustomText(
-                    text: Get.find<FavoritesController>().flip == 0
-                        ? Get.find<FavoritesController>()
-                            .items
-                            .value
-                            .length
-                            .toString()
-                        : Get.find<FavoritesController>()
-                            .filter
+        // centerTitle: true,
+        elevation: 0,
+        title: const CustomText(text: 'Favorites', color: lightColor),
+        actions: [
+          IconButton(
+            icon: GetBuilder<FavoritesController>(
+              init:Get.find<FavoritesController>(),
+              builder: (controller)=>CustomText(
+                    text: controller
+                            .newList
                             .length
                             .toString(),
-                    size: 18,
-                  )),
-              onPressed: null,
+                       
+                    size: size.width*0.05,
+                  ),
             ),
-            IconButton(
-              icon: const Icon(Icons.search),
-              splashRadius: 15,
-              onPressed: () {
-                //Get.to(()=>SearchSaved());
-                Get.find<FavoritesController>().search(context);
+            onPressed: null,
+          ),
+          IconButton(
+            icon: const Icon(Icons.search),
+            splashRadius: 15,
+            onPressed: () {
+              Get.find<FavoritesController>().search(context);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.shuffle),
+            splashRadius: 15,
+            onPressed: () {
+              Get.find<FavoritesController>().randomnav();
+            },
+          ),
+        ],
+      ),
+
+      body:  GetBuilder<FavoritesController>(
+        init: Get.find<FavoritesController>(),
+        builder:(controller)=> Padding(
+            padding: const EdgeInsets.all(16),
+            child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: Get.find<FavoritesController>().newList.length,
+              itemBuilder: (context, index) {
+                return ListTile( 
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.white),
+                      splashRadius: 15,
+                      onPressed: () {
+                       controller.localDelete(
+                           controller.newList[index].id, index);
+                      },
+                    ),
+                    title: CustomText(
+                      text: controller.newList[index].name,
+                      color: whiteColor,
+                      size: size.width*0.05,
+                    ), 
+                    onTap: () {
+                      controller.navv(controller.newList[index]);
+                    });
               },
             ),
-           
-            IconButton(
-              icon: const Icon(Icons.shuffle),
-              splashRadius: 15,
-              onPressed: () {
-                Get.find<FavoritesController>().randomnav();
-              }, 
-            ),
-          ],
         ),
-        body: GetX<FavoritesController>( 
-          init: Get.put(FavoritesController()),
-          builder: (controll) => controll.items.value.isEmpty
-              ? Container() 
-              : Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: ListView.builder(
-                    itemCount: controll.flip==0? controll.items.value.length:controll.filter.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: CustomText( 
-                          text: controll.flip==0? controll.items.value[index].name: controll.filter[index].name,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                        onTap: () {
-                          controll.nav(index);
-                        },
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.white),
-                          splashRadius: 15,
-                          onPressed: () {
-                            controll.delete(
-                              controll.flip==0?controll.items.value[index].id:controll.filter[index].id,
-                              'Favourites'
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-        )
-        );
+      ),
+    );
   }
 }

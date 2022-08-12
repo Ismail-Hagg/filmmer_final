@@ -28,13 +28,12 @@ class ActorController extends GetxController {
     load();
     super.onInit();
   }
-
+  
+  //fetch data from api
   load() async {
     getActor();
     getActorMovie();
     getActorShow();
-    print(_model.id);
-    print('done with the apis');
   }
 
   flip(int number) {

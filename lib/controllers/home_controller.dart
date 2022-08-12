@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:filmmer_final/models/more_search_moving.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,18 +12,23 @@ import '../models/movie_result_model.dart';
 import '../models/recomended_model.dart';
 import '../models/result_model.dart';
 import '../models/trailer_model.dart';
+import '../models/upload.dart';
+import '../screens/actor_screen.dart';
+import '../screens/more_search_screen.dart';
 import '../screens/movie_detale_screen.dart';
 import '../screens/test_screen.dart';
 import '../services/home_screen_service.dart';
+import '../storage_local/local_database.dart';
+import 'actor_controller.dart';
+import 'connectivity_controller.dart';
 import 'movie_detale_controller.dart';
 
 class HomeController extends GetxController {
-
   ActorModel _actor = ActorModel();
   ActorModel get actor => _actor;
 
-  
-  
+  final dbHelper = DatabaseHelper.instance;
+
   Move move = Move();
   final Rx<HomeTopMovies> _coming = Rx(HomeTopMovies(results: [], initial: [
     'assets/images/placeholder.jpg',
@@ -31,7 +38,8 @@ class HomeController extends GetxController {
   ]));
   Rx<HomeTopMovies> get coming => _coming;
 
-   final Rx<HomeTopMovies> _popularMovies = Rx(HomeTopMovies(results: [], initial: [
+  final Rx<HomeTopMovies> _popularMovies =
+      Rx(HomeTopMovies(results: [], initial: [
     'assets/images/placeholder.jpg',
     'assets/images/placeholder.jpg',
     'assets/images/placeholder.jpg',
@@ -39,7 +47,8 @@ class HomeController extends GetxController {
   ]));
   Rx<HomeTopMovies> get popularMovies => _popularMovies;
 
-   final Rx<HomeTopMovies> _popularShows = Rx(HomeTopMovies(results: [], initial: [
+  final Rx<HomeTopMovies> _popularShows =
+      Rx(HomeTopMovies(results: [], initial: [
     'assets/images/placeholder.jpg',
     'assets/images/placeholder.jpg',
     'assets/images/placeholder.jpg',
@@ -47,7 +56,8 @@ class HomeController extends GetxController {
   ]));
   Rx<HomeTopMovies> get popularShows => _popularShows;
 
-   final Rx<HomeTopMovies> _topRatedMovies = Rx(HomeTopMovies(results: [], initial: [
+  final Rx<HomeTopMovies> _topRatedMovies =
+      Rx(HomeTopMovies(results: [], initial: [
     'assets/images/placeholder.jpg',
     'assets/images/placeholder.jpg',
     'assets/images/placeholder.jpg',
@@ -55,7 +65,8 @@ class HomeController extends GetxController {
   ]));
   Rx<HomeTopMovies> get topRatedMovies => _topRatedMovies;
 
-   final Rx<HomeTopMovies> _topRatedShows = Rx(HomeTopMovies(results: [], initial: [
+  final Rx<HomeTopMovies> _topRatedShows =
+      Rx(HomeTopMovies(results: [], initial: [
     'assets/images/placeholder.jpg',
     'assets/images/placeholder.jpg',
     'assets/images/placeholder.jpg',
@@ -66,25 +77,54 @@ class HomeController extends GetxController {
   final Rx<MovieDetaleModel> _movied = Rx(MovieDetaleModel());
   Rx<MovieDetaleModel> get movied => _movied;
 
-  final TrailerModel _trailer=TrailerModel();
+  final TrailerModel _trailer = TrailerModel();
   TrailerModel get trailer => _trailer;
 
-  var count=0.obs;
 
+
+  var count = 0.obs;
+  var build = false.obs;
+
+  Rx<ConnectivityResult> internet =
+      Rx(Get.find<ConnectivityController>().connect);
   @override
   void onInit() async {
     super.onInit();
+    //ever(internet, (_)=>check);
+  }
+
+  @override
+  void onReady() async {
     load();
+    super.onReady();
+  }
+
+  check() async {
+    print('change occured');
+    if (internet.value != ConnectivityResult.none) {
+      load();
+      build.value = true;
+    } else {
+      build.value = false;
+    }
   }
 
   //fetch data from api
   load() async {
-    getUpcoming();
-    getpopularMovies();
-    getpopularShows();
-    getTopRatedMovies();
-    getTopRatedShows();
-    update();
+    count.value = 0;
+    if (Get.find<ConnectivityController>().connect != ConnectivityResult.none) {
+      getUpcoming();
+      getpopularMovies();
+      getpopularShows();
+      getTopRatedMovies();
+      getTopRatedShows();
+      build.value = true;
+      update();
+    } else {
+      build.value = false;
+      update();
+    }
+    count.value = 1;
   }
 
   getUpcoming() async {
@@ -108,106 +148,133 @@ class HomeController extends GetxController {
   getTopRatedMovies() async {
     await FirstPageService().getHomeTopMovies(top).then((value) => {
           _topRatedMovies.value = value,
-          print(_topRatedMovies.value.results!.length)
         });
   }
 
   getTopRatedShows() async {
     try {
       await FirstPageService().getHomeTopMovies(topTv).then((value) => {
-          _topRatedShows.value = value,
-        });
+            _topRatedShows.value = value,
+          });
     } catch (e) {
-      print(e.toString());
+      Get.snackbar(e.toString(), '');
     }
   }
 
   //navigate to the detale screen
   navigatoToDetale(Results? res) async {
-    _movied.value = MovieDetaleModel(
-      id: res!.id,
-      posterPath: res.posterPath,
-      overview: res.overview,
-      voteAverage: double.parse(res.voteAverage.toString()),
-      title: res.title,
-      isShow: res.isShow,
-      runtime: 0,
-      productionCountries: null,
-      genres: null,
-      releaseDate: res.releaseDate,
-      cast: CastModel(cast: [
-        Cast(
-          id: 0, 
-          name: 'Actor',
-          profilePath: 'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-          character: 'character',
-          creditId: 'id'
-        ),
-        Cast(
-          id: 0, 
-          name: 'Actor',
-          profilePath: 'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-          character: 'character',
-          creditId: 'id'
-        ),
-        Cast(
-          id: 0, 
-          name: 'Actor',
-          profilePath: 'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-          character: 'character',
-          creditId: 'id'
-        ),
-        Cast(
-          id: 0,
-          name: 'Actor',
-          profilePath: 'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-          character: 'character',
-          creditId: 'id'
-        ),
-        Cast(
-          id: 0,
-          name: 'Actor',
-          profilePath: 'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-          character: 'character',
-          creditId: 'id'
-        )
-      ]),
-      recomendation: RecomendationModel(
-        results: [
-          Results(
-            id: 0,
-            posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-            voteAverage:0.0.toString()
-          ),
-           Results(
-            id: 0,
-            posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-            voteAverage:0.0.toString()
-          ),
-           Results(
-            id: 0,
-            posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-            voteAverage:0.0.toString()
-          ),
-           Results(
-            id: 0,
-            posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-            voteAverage:0.0.toString()
-          ),
-           Results(
-            id: 0,
-            posterPath:'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-            voteAverage:0.0.toString()
-          )
-        ]
-      )
-    );
-    // update();
-    Get.create(() =>(MovieDetaleController()),permanent: false);
-    Get.to(() => MovieDetale(tag:res.title.toString()),preventDuplicates: false);
+    if (Get.find<ConnectivityController>().connect != ConnectivityResult.none) {
+      _movied.value = MovieDetaleModel(
+          id: res!.id,
+          posterPath: res.posterPath,
+          overview: res.overview,
+          voteAverage: double.parse(res.voteAverage.toString()),
+          title: res.title,
+          isShow: res.isShow,
+          runtime: 0,
+          productionCountries: null,
+          genres: null,
+          releaseDate: res.releaseDate,
+          cast: CastModel(cast: [
+            Cast(
+                id: 0,
+                name: 'Actor',
+                profilePath:
+                    'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                character: 'character',
+                creditId: 'id'),
+            Cast(
+                id: 0,
+                name: 'Actor',
+                profilePath:
+                    'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                character: 'character',
+                creditId: 'id'),
+            Cast(
+                id: 0,
+                name: 'Actor',
+                profilePath:
+                    'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                character: 'character',
+                creditId: 'id'),
+            Cast(
+                id: 0,
+                name: 'Actor',
+                profilePath:
+                    'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                character: 'character',
+                creditId: 'id'),
+            Cast(
+                id: 0,
+                name: 'Actor',
+                profilePath:
+                    'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                character: 'character',
+                creditId: 'id')
+          ]),
+          recomendation: RecomendationModel(results: [
+            Results(
+                id: 0,
+                posterPath:
+                    'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                voteAverage: 0.0.toString()),
+            Results(
+                id: 0,
+                posterPath:
+                    'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                voteAverage: 0.0.toString()),
+            Results(
+                id: 0,
+                posterPath:
+                    'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                voteAverage: 0.0.toString()),
+            Results(
+                id: 0,
+                posterPath:
+                    'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                voteAverage: 0.0.toString()),
+            Results(
+                id: 0,
+                posterPath:
+                    'https://images.unsplash.com/photo-1653682902362-308526d14ef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                voteAverage: 0.0.toString())
+          ]));
+      // update();
+      Get.create(() => (MovieDetaleController()), permanent: false);
+      Get.to(() => MovieDetale(tag: res.title.toString()),
+          preventDuplicates: false);
+    } else {
+      Get.snackbar('Error', 'No Internet connection');
+    }
   }
 
+  //navigate to search page
+  goToSearch(bool isSearch, String link, String title) {
+    if (Get.find<ConnectivityController>().connect != ConnectivityResult.none) {
+      move = Move(isSearch: isSearch, link: link, title: title);
+      Get.to(() => MoreSearchScreen());
+    } else {
+      Get.snackbar('Error', 'No Internet connection');
+    }
+  }
 
+  //navigate to actor page
+  goToActor(String? name, String? pic, int? age, String? id, String? bio,
+      List<Results>? movies, List<Results>? shows) {
+    if (Get.find<ConnectivityController>().connect != ConnectivityResult.none) {
+      _actor = ActorModel(
+        name: name,
+        pic: pic,
+        age: age,
+        id: id,
+        bio: bio,
+        movies: movies,
+        shows: shows,
+      );
+      Get.create(() => (ActorController()), permanent: false);
+      Get.to(() => ActorScreen(), preventDuplicates: false);
+    } else {
+      Get.snackbar('Error', 'No Internet connection');
+    }
+  }
 }
-
- 

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:filmmer_final/screens/controll_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,11 +11,15 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../helper/constants.dart';
+import '../models/upload.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
+import '../storage_local/local_database.dart';
 import '../storage_local/user_data.dart';
 
 class AuthController extends GetxController {
+  final dbHelper = DatabaseHelper.instance;
+  
   final Rxn<User> _user = Rxn<User>();
   User? get user => _user.value;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -54,6 +59,7 @@ class AuthController extends GetxController {
             idToken: authy.idToken, accessToken: authy.accessToken);
         await _auth.signInWithCredential(credential).then((user) async => {
               saveUser(user,true),
+              getDocs(user.user!.uid),
             });
       }
     } on FirebaseAuthException catch (e) {
@@ -106,6 +112,7 @@ class AuthController extends GetxController {
           .then((user) async => {
                 FireStoreService().getCurrentUser(user.user!.uid).then((value) async{
                   setUser(UserModel.fromMap(value.data() as Map<dynamic, dynamic>));
+                  getDocs(user.user!.uid);
                 })
               });
     } on FirebaseAuthException catch (e) {
@@ -119,9 +126,12 @@ class AuthController extends GetxController {
 
   //signout function
   Future<void> signOut() async {
-    _auth.signOut();
-    _googleSignIn.signOut();
+    await _auth.signOut();
+    await _googleSignIn.signOut();
     UserData().deleteUser;
+    await dbHelper.deleteAll(DatabaseHelper.showTable);
+    await dbHelper.deleteAll(DatabaseHelper.movieTable);
+    await dbHelper.deleteAll(DatabaseHelper.table);
     update();
     Get.offAll(() => ControllScreen());
   }
@@ -148,6 +158,8 @@ class AuthController extends GetxController {
       update();
     }
   }
+
+  //save user data locally
   void setUser(UserModel user) async {
     await UserData().setUser(user);
     count.value = 0;
@@ -175,5 +187,50 @@ class AuthController extends GetxController {
 
     await FireStoreService().addUsers(model);
      setUser(model);
+  }
+
+  Future getDocs(String userId) async {
+    List<FirebaseSend> send = [];
+    QuerySnapshot fav = await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(userId)
+        .collection('Favourites')
+        .get();
+    QuerySnapshot mov = await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(userId)
+        .collection('movieWatchList')
+        .get();
+    QuerySnapshot sho = await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(userId)
+        .collection('showWatchList')
+        .get();
+    if (fav.docs.isNotEmpty) {
+      send=[];
+      for (int i = 0; i < fav.docs.length; i++) {
+        var a = fav.docs[i].data();
+        send.add(FirebaseSend.fromMapPre(a as Map<String, dynamic>));
+        await dbHelper.insert(send[i].toMapLocal(), DatabaseHelper.table);
+      }
+    }
+
+    if (mov.docs.isNotEmpty) {
+      send=[];
+      for (int i = 0; i < mov.docs.length; i++) {
+        var a = mov.docs[i].data();
+        send.add(FirebaseSend.fromMapPre(a as Map<String, dynamic>));
+        await dbHelper.insert(send[i].toMapLocal(), DatabaseHelper.movieTable);
+      }
+    }
+
+    if (sho.docs.isNotEmpty) {
+      send=[];
+      for (int i = 0; i < sho.docs.length; i++) {
+        var a = sho.docs[i].data();
+        send.add(FirebaseSend.fromMapPre(a as Map<String, dynamic>));
+        await dbHelper.insert(send[i].toMapLocal(), DatabaseHelper.showTable);
+      }
+    }
   }
 }

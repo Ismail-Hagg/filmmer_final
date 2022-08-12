@@ -39,22 +39,60 @@ class FirebaseSend {
     };
   }
 
-  factory FirebaseSend.fromDocumentSnapshot(DocumentSnapshot documentSnapshot) {
-    return FirebaseSend(
-      posterPath: documentSnapshot['posterPath'] as String,
-      overView: documentSnapshot['overView'] as String,
-      voteAverage: documentSnapshot['voteAverage'] as double,
-      name: documentSnapshot['name'] as String,
-      isShow: documentSnapshot['isShow'] as bool,
-      releaseDate: documentSnapshot['releaseDate'] as String,
-      id: documentSnapshot['id'] as String,
-      time: documentSnapshot['time'] ,
-      genres: documentSnapshot['genres'],
-    );
+   Map<String, dynamic> toMapLocal() {
+    return <String, dynamic>{
+      'posterPath': posterPath,
+      'overView': overView,
+      'voteAverage': voteAverage,
+      'name': name,
+      'isShow': isShow==true?1:0,
+      'releaseDate': releaseDate,
+      'id': id,
+      'time':time,
+      'genres': genres.join(","),
+    };
   }
-  
 
-  
+  // factory FirebaseSend.fromDocumentSnapshot(DocumentSnapshot documentSnapshot) {
+  //   return FirebaseSend(
+  //     posterPath: documentSnapshot['posterPath'] as String,
+  //     overView: documentSnapshot['overView'] as String,
+  //     voteAverage: documentSnapshot['voteAverage'] as double,
+  //     name: documentSnapshot['name'] as String,
+  //     isShow: documentSnapshot['isShow'] as bool,
+  //     releaseDate: documentSnapshot['releaseDate'] as String,
+  //     id: documentSnapshot['id'] as String,
+  //     time: documentSnapshot['time'] ,
+  //     genres: documentSnapshot['genres'],
+  //   );
+  // }
 
+   factory FirebaseSend.fromMap(Map<String, dynamic> map){
+  return FirebaseSend(
+      posterPath: map['posterPath'] as String,
+      overView: map['overView'] as String,
+      voteAverage: map['voteAverage'] as double,
+      name: map['name'] as String,
+      isShow: map['isShow']==1?true:false,
+      releaseDate: map['releaseDate'] as String,
+      id: map['id'] as String,
+      time: map['time'] ,
+      genres: map['genres'].split(',')
+    );
+ }
+
+  factory FirebaseSend.fromMapPre(Map<String, dynamic> map){
+  return FirebaseSend(
+      posterPath: map['posterPath'] as String,
+      overView: map['overView'] as String,
+      voteAverage: map['voteAverage'] as double,
+      name: map['name'] as String,
+      isShow: map['isShow'],
+      releaseDate: map['releaseDate'] as String,
+      id: map['id'] as String,
+      time: map['time'] ,
+      genres: map['genres']
+    );
+ }
 }
 

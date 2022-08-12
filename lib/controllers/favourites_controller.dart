@@ -9,111 +9,93 @@ import '../models/result_model.dart';
 import '../models/upload.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
+import '../storage_local/local_database.dart';
 import '../storage_local/user_data.dart';
 import '../widgets/custom_text.dart';
 
 class FavoritesController extends GetxController {
-  //RxList<FirebaseSend> items=RxList();
-  Rx<List<FirebaseSend>> items = Rx([]);
+  List<FirebaseSend> newList = [];
+  final dbHelper = DatabaseHelper.instance;
 
-  List<FirebaseSend> filter = [];
-  List<String> allGenres = [];
-  List<String> selectedGenres = [];
-  List<bool> genrebool = [];
-  int flip=0;
 
-   UserModel get usermodel => _usermodel;
-  UserModel _usermodel =
+  UserModel get usermodel => _usermodel;
+   UserModel _usermodel =
       UserModel(email: '', name: '', pic: '', userId: '', isLocal: false);
 
-      
   @override
-  void onInit() {
+  void onInit() { 
     super.onInit();
-    getUser();
-   
+    loadDetales();
   }
-
-  getUser(){
-    UserData().getUser.then((val){
-      _usermodel=val;
-      items.bindStream(FireStoreService()
-        .getUserMessageStream(val.userId,'Favourites'));
+  //get userdata and favourites from local storage
+  loadDetales() async {
+    await UserData().getUser.then((value){
+      _usermodel=value;
+    });
+    await dbHelper.queryAllRows(DatabaseHelper.table).then((value) {
+      for (var i = 0; i < value.length; i++) {
+        newList.add(FirebaseSend.fromMap(value[i]));
+      }
+      newList.sort((a, b) => b.time.compareTo(a.time));
+      update();
     });
   }
 
-  delete(String id,String collection) async {
-    FireStoreService().delete(_usermodel.userId, id,collection);
+  delete(String id, String collection) async {
+    FireStoreService().delete(_usermodel.userId, id, collection);
   }
 
-  check(int index) {
-    genrebool[index] = !genrebool[index];
-    if (selectedGenres.contains(allGenres[index])) {
-      selectedGenres.remove(allGenres[index]);
+  fromDetale(FirebaseSend send, bool addOrDelete) {
+    var str = [];
+    if (addOrDelete == true) {
+      newList.insert(0,send);
     } else {
-      selectedGenres.add(allGenres[index]);
+      for (var element in newList) {
+        str.add(element.name);
+      }
+      newList.removeAt(str.indexOf(send.name));
     }
-    print(selectedGenres);
     update();
   }
 
-  
-
-
-
-  
-
-
   randomnav() {
-    if (flip==1) {
-      if (filter.isEmpty) {
+    if (newList.isEmpty) {
       Get.snackbar('No Evtries', '');
     } else {
       Random random = Random();
-      int randomNumber = random.nextInt(filter.length);
-      nav(randomNumber);
-    }
-    } else { 
-      if (items.value.isEmpty) {
-      Get.snackbar('No Evtries', '');
-    } else if (flip==0){
-      Random random = Random();
-      int randomNumber = random.nextInt(items.value.length);
-      nav(randomNumber);
-    }    
+      int randomNumber = random.nextInt(newList.length);
+      navv(newList[randomNumber]);
     }
   }
 
-  nav(int index) {
+  //delete from local storage and firebase
+  void localDelete(String id, int index) async {
+    newList.removeAt(index);
+    await dbHelper.delete(DatabaseHelper.table, id);
+    update();
+    delete(id, 'Favourites');
+  }
+
+  //navigato to detale page
+  navv(FirebaseSend model) {
     Get.find<HomeController>().navigatoToDetale(Results(
-      id: int.parse(items.value[index].id),
-      posterPath: items.value[index].posterPath,
-      overview: items.value[index].overView,
-      voteAverage: items.value[index].voteAverage.toString(),
-      title: items.value[index].name,
-      isShow: items.value[index].isShow,
-      releaseDate: items.value[index].releaseDate,
+      id: int.parse(model.id),
+      posterPath: model.posterPath,
+      overview: model.overView,
+      voteAverage: model.voteAverage.toString(),
+      title: model.name,
+      isShow: model.isShow,
+      releaseDate: model.releaseDate,
     ));
   }
 
-  navsearched(FirebaseSend send) {
-    Get.find<HomeController>().navigatoToDetale(Results(
-      id: int.parse(send.id),
-      posterPath: send.posterPath,
-      overview: send.overView,
-      voteAverage: send.voteAverage.toString(),
-      title: send.name,
-      isShow: send.isShow,
-      releaseDate: send.releaseDate,
-    ));
-  }
 
+  //search through favourites
   search(context) {
     showSearch(
       context: context,
       delegate: SearchPage<FirebaseSend>(
-        onQueryUpdate: (s) => print(s),
-        items: items.value,
+        items: newList,
         searchLabel: 'Search people',
         suggestion: const Center(
           child: CustomText(text: 'Search ..', size: 16, color: Colors.white),
@@ -124,8 +106,6 @@ class FavoritesController extends GetxController {
         ),
         filter: (person) => [
           person.name,
-          // person.surname,
-          // person.age.toString(),
         ],
         builder: (person) => Padding(
           padding: const EdgeInsets.all(8.0),
@@ -136,11 +116,8 @@ class FavoritesController extends GetxController {
               size: 18,
             ),
             onTap: () {
-              //print(items.value.indexOf(person.name));
-              navsearched(person);
+              navv(person);
             },
-            // subtitle: Text(person.surname),
-            // trailing: Text('${person.age} yo'),
           ),
         ),
       ),

@@ -24,21 +24,24 @@ class WatchList extends StatelessWidget {
             color: lightColor,
           ),
           actions: [
-            // GetBuilder<WatchListController>(
-            //   init: Get.find<WatchListController>(),
-            //   builder: (bro) =>
-               Obx(()=>
-                  IconButton(
-                  icon: CustomText(
-                    text: Get.find<WatchListController>().tabs.value == 0
-                        ? Get.find<WatchListController>().movies.value.length.toString()
-                        : Get.find<WatchListController>().shows.value.length.toString(),
-                    size: 18,
-                  ),
-                  onPressed: null,
-                             ),
-               ),
-            //),
+            GetBuilder<WatchListController>(
+              init: Get.find<WatchListController>(),
+              builder: (bro) => IconButton(
+                icon: CustomText(
+                  text: Get.find<WatchListController>().tabs.value == 0
+                      ? Get.find<WatchListController>()
+                          .moviesLocal
+                          .length
+                          .toString()
+                      : Get.find<WatchListController>()
+                          .showLocal
+                          .length
+                          .toString(),
+                  size: 18,
+                ),
+                onPressed: null,
+              ),
+            ),
             IconButton(
               icon: const Icon(Icons.search),
               splashRadius: 15,
@@ -57,7 +60,7 @@ class WatchList extends StatelessWidget {
           ],
         ),
         body: GetBuilder<WatchListController>(
-          init: Get.put(WatchListController()),
+          init: Get.find<WatchListController>(),
           builder: (controller) => Column(
             children: [
               Row(
@@ -123,80 +126,36 @@ class WatchList extends StatelessWidget {
                 ],
               ),
               Expanded(
-                child: Container(
-                    child: GetX<WatchListController>(
-                      init: Get.find<WatchListController>(),
-                      builder: (build) => ListView.builder(
-                        itemCount: Get.find<WatchListController>().tabs.value == 0
-                            ? build.movies.value.length
-                            : build.shows.value.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: CustomText(
-                              text: Get.find<WatchListController>().tabs.value == 0
-                                  ? build.movies.value[index].name
-                                  : build.shows.value[index].name,
-                              color: Colors.white,
-                            ),
-                            onTap: () {
-                              Get.find<WatchListController>().tabs.value == 0
-                                  ?
-                              print([build.movies.value[index].name]): print(build.shows.value[index].name);
-                              Get.find<WatchListController>().navsearched(
-                                  build.tabs.value == 0
-                                      ? build.movies.value[index]
-                                      : build.shows.value[index]);
-                            },
-                            trailing: IconButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: controller.tabs.value == 0
+                        ? controller.moviesLocal.length
+                        : controller.showLocal.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        onTap: ()=>controller.preNav(index),
+                        title: CustomText(
+                            text: controller.tabs.value == 0
+                                ? controller.moviesLocal[index].name
+                                : controller.showLocal[index].name,
+                            color: Colors.white,
+                            size: size.width * 0.05),
+                                         trailing: IconButton(
                               icon: const Icon(Icons.delete, color: Colors.white),
                               splashRadius: 15,
                               onPressed: () {
-                                controll.delete(
-                                    controll.tabs.value == 0
-                                        ? controll.movies.value[index].id
-                                        : controll.shows.value[index].id,
-                                    controll.tabs.value == 0
-                                        ? 'movieWatchList'
-                                        : 'showWatchList');
+                                controll.delete(index,controll.tabs.value);
                               },
                             ),
-                          );
-                        },
-                      ),
-                    )),
+                      );
+                    },
+                  ),
+                ),
               )
             ],
           ),
         ));
   }
 }
-
-// Widget lst(int index) {
-//   return GetX<WatchListController>(
-//     init:Get.find<WatchListController>(),
-//     builder:(build)=> ListView.builder(
-//       itemCount:index==0?build.movies.value.length:build.shows.value.length,
-//       itemBuilder: (context, index) {
-//         return ListTile(
-//           title: CustomText(
-//             text:index==0? build.movies.value[index].name:build.shows.value[index].name,
-//             color: Colors.white,
-//             size: 18,
-//           ),
-//           onTap: () {
-//             print(build.shows.value[index].name);
-//           },
-//           trailing: IconButton(
-//             icon: const Icon(Icons.delete, color: Colors.white),
-//             splashRadius: 15,
-//             onPressed: () {
-//               // controll.delete(controll.flip == 0
-//               //     ? controll.items.value[index].id
-//               //     : controll.filter[index].id);
-//             },
-//           ),
-//         );
-//       },
-//     ),
-//   );
-// }

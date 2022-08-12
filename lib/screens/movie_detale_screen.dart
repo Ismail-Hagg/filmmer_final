@@ -248,7 +248,7 @@ class MovieDetale extends StatelessWidget {
                         title: 'Recommendations',
                         detale: controller.detales
                       ),
-                    ),
+                    ), 
                   )
             ]),
           ),

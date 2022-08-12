@@ -1,4 +1,5 @@
 import 'package:filmmer_final/controllers/home_controller.dart';
+import 'package:filmmer_final/controllers/watchlist_controller.dart';
 import 'package:filmmer_final/helper/constants.dart';
 import 'package:get/get.dart';
 import '../models/actor_model.dart';
@@ -10,9 +11,13 @@ import '../screens/actor_screen.dart';
 import '../screens/trailer_screen.dart';
 import '../services/firestore_service.dart';
 import '../services/home_screen_service.dart';
+import '../storage_local/local_database.dart';
 import '../storage_local/user_data.dart';
+import 'favourites_controller.dart';
 
 class MovieDetaleController extends GetxController {
+  final dbHelper = DatabaseHelper.instance;
+
   MovieDetaleModel _detales = MovieDetaleModel();
   MovieDetaleModel get detales => _detales;
 
@@ -39,12 +44,16 @@ class MovieDetaleController extends GetxController {
 
   //check if movie or show is in favourites
   isFavourite() async {
-    UserData().getUser.then((value) {
+    UserData().getUser.then((value) async {
       _usermodel = value;
-      FireStoreService()
-          .heart(value.userId, detales.id.toString())
-          .then((value) {
-        value == true ? flip.value = 1 : flip.value = 0;
+      await dbHelper
+          .querySelect(DatabaseHelper.table, _detales.id.toString())
+          .then((value) async {
+        if (value.isEmpty) {
+          flip.value = 0;
+        } else {
+          flip.value = 1;
+        }
       });
     });
   }
@@ -68,52 +77,84 @@ class MovieDetaleController extends GetxController {
         time: DateTime.now().toString(),
         genres: lst);
     if (flip.value == 0) {
-      await FireStoreService()
-          .upload(_usermodel.userId, fire, flip.value)
-          .then((value) => {
-                Get.snackbar('Added To Favorites', '',
-                    duration: const Duration(seconds: 1),
-                    backgroundColor: lightColor,
-                    colorText: whiteColor),
-                flip.value = 1,
-                update()
-              });
+      if(Get.isRegistered<FavoritesController>()==true){
+        Get.find<FavoritesController>().fromDetale(fire,true);
+      }
+      await dbHelper
+          .insert(fire.toMapLocal(), DatabaseHelper.table)
+          .then((value) async {
+        Get.snackbar('Added To Favorites', '',
+            duration: const Duration(seconds: 1),
+            backgroundColor: lightColor,
+            colorText: whiteColor);
+        await FireStoreService().upload(_usermodel.userId, fire, flip.value);
+         flip.value = 1;
+        update();
+      });
     } else {
-      await FireStoreService()
-          .upload(_usermodel.userId, fire, flip.value)
-          .then((value) => {
-                Get.snackbar('Deleted From Favorites', '',
-                    duration: const Duration(seconds: 1),
-                    backgroundColor: lightColor,
-                    colorText: whiteColor),
-                flip.value = 0,
-                update()
-              });
+      if(Get.isRegistered<FavoritesController>()==true){
+       Get.find<FavoritesController>().fromDetale(fire,false);
+      }
+       await dbHelper
+          .delete(DatabaseHelper.table,fire.id)
+          .then((value) async {
+        Get.snackbar('Deleted From Favorites', '',
+            duration: const Duration(seconds: 1),
+            backgroundColor: lightColor,
+            colorText: whiteColor);
+        await FireStoreService().upload(_usermodel.userId, fire, flip.value);
+        flip.value = 0;
+        update();
+      }); 
     }
   }
 
   //add movie or show to watchlist
   watch() async {
-    List<String> lst = [];
-    String show = '';
-    for (var i = 0; i < detales.genres!.length; i++) {
-      lst.add(detales.genres![i].name.toString());
-    }
-    FirebaseSend fire = FirebaseSend(
-        posterPath: detales.posterPath.toString(),
-        overView: detales.overview.toString(),
-        voteAverage: detales.voteAverage as double,
-        name: detales.title.toString(),
-        isShow: detales.isShow as bool,
-        releaseDate: detales.releaseDate.toString(),
-        id: detales.id.toString(),
-        time: DateTime.now().toString(),
-        genres: lst);
-    fire.isShow == true ? show = 'show' : show = 'movie';
+    String table = detales.isShow != true
+        ? DatabaseHelper.movieTable
+        : DatabaseHelper.showTable;
+    await dbHelper
+        .querySelect(table, detales.id.toString())
+        .then((value) async { 
+      if (value.isEmpty) {
+        List<String> lst = [];
+        String show = '';
+        for (var i = 0; i < detales.genres!.length; i++) {
+          lst.add(detales.genres![i].name.toString());
+        }
+        FirebaseSend fire = FirebaseSend(
+            posterPath: detales.posterPath.toString(),
+            overView: detales.overview.toString(),
+            voteAverage: detales.voteAverage as double,
+            name: detales.title.toString(),
+            isShow: detales.isShow as bool,
+            releaseDate: detales.releaseDate.toString(),
+            id: detales.id.toString(),
+            time: DateTime.now().toString(),
+            genres: lst);
+        fire.isShow == true ? show = 'show' : show = 'movie';
 
-    await FireStoreService().watchList(_usermodel.userId, fire, show);
+        await dbHelper.insert(fire.toMapLocal(), table).then((value) async {
+           if(Get.isRegistered<WatchListController>()==true){
+       Get.find<WatchListController>().fromDetale(fire,fire.isShow);
+      }
+          Get.snackbar('Added WatchList', '',
+              duration: const Duration(seconds: 1),
+              backgroundColor: lightColor,
+              colorText: whiteColor);
+          await FireStoreService().watchList(_usermodel.userId, fire, show);
+        });
+      } else {
+        Get.snackbar('Already In WatchList', '',
+            duration: const Duration(seconds: 1),
+            backgroundColor: lightColor,
+            colorText: whiteColor);
+      }
+    });
   }
 
+  //fetch movie or show detales from api
   loadDetales(MovieDetaleModel res) async {
     load = 0;
     var show = res.isShow == true ? 'tv' : 'movie';
@@ -140,17 +181,18 @@ class MovieDetaleController extends GetxController {
           .getTrailer(
               'https://api.themoviedb.org/3/$show/${res.id}/videos?api_key=e11cff04b1fcf50079f6918e5199d691&language=en-US')
           .then((value) {
+            print('https://api.themoviedb.org/3/$show/${res.id}/videos?api_key=e11cff04b1fcf50079f6918e5199d691&language=en-US');
         _trailer = value;
-        
       });
     } catch (e) {
-      print(e.toString());
+      Get.snackbar(e.toString(), '');
     }
 
     load = 1;
     update();
   }
 
+  //navigate to actor page
   goToActorPage(String name, String pic) {
     _actor.name = name;
     _actor.pic = pic;
@@ -158,12 +200,16 @@ class MovieDetaleController extends GetxController {
     Get.to(() => ActorScreen());
   }
 
-  goToTrailer(){
-    if(load==0){
-      print('loading');
-    }else{
+  //navigate to trailer page
+  goToTrailer() {
+    if (load == 0) {
+    } else if (Get.find<HomeController>().trailer.results!.isEmpty == true) {
+      Get.snackbar('No Trailer', '');
+    } else {
       Get.find<HomeController>().trailer.results = _trailer.results;
-      Get.to(()=>const TrailerScreen(),);
+      Get.to(
+        () => const TrailerScreen(),
+      );
     }
   }
 }

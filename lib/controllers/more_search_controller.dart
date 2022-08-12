@@ -10,7 +10,7 @@ class MoreSearchController extends GetxController {
   Move move = Get.find<HomeController>().move;
   HomeTopMovies model = HomeTopMovies();
   int count = 1;
-  String query='';
+  String query = '';
 
   @override
   void onInit() {
@@ -22,7 +22,7 @@ class MoreSearchController extends GetxController {
   getMovies(int page) async {
     await FirstPageService()
         .getHomeTopMovies('${move.link}&page=$page')
-        .then((value) => {model = value, print(page)});
+        .then((value) => {model = value});
     update();
   }
 
@@ -32,6 +32,7 @@ class MoreSearchController extends GetxController {
     }
   }
 
+  //next page
   nextPage(int last) async {
     if (count == 10) {
       count = 1;
@@ -44,6 +45,7 @@ class MoreSearchController extends GetxController {
     }
   }
 
+  //previous page
   prePage() async {
     if (count == 1) {
       count = 10;
@@ -54,6 +56,7 @@ class MoreSearchController extends GetxController {
     }
   }
 
+  //search
   search(int page) async {
     var lnk =
         'https://api.themoviedb.org/3/search/multi?api_key=e11cff04b1fcf50079f6918e5199d691&language=en-US&query=$query&page=$page';
@@ -62,39 +65,38 @@ class MoreSearchController extends GetxController {
           if (model.totalPages == 0)
             {
               count = 0,
-              Get.snackbar('', 'No Results',
-                  backgroundColor: lightColor,
-                  colorText: whiteColor,)
+              Get.snackbar(
+                '',
+                'No Results',
+                backgroundColor: lightColor,
+                colorText: whiteColor,
+              )
             }
           else if (model.totalPages! < page)
             {
               Get.snackbar('', 'No More Results',
-                  backgroundColor: lightColor,
-                  colorText: whiteColor)
+                  backgroundColor: lightColor, colorText: whiteColor)
             }
         });
 
     update();
   }
 
-  searchUp(String way,int last){
-    if (way=='up') {
-      if (count!=last) {
+  searchUp(String way, int last) {
+    if (way == 'up') {
+      if (count != last) {
         count++;
-    search(count);
+        search(count);
       } else {
-         Get.snackbar('', 'No More Results',
-                  backgroundColor: lightColor,
-                  colorText: whiteColor);
+        Get.snackbar('', 'No More Results',
+            backgroundColor: lightColor, colorText: whiteColor);
       }
-    }else{
-      if (count==1) {
-        
+    } else {
+      if (count == 1) {
       } else {
         count--;
-    search(count);
+        search(count);
       }
-      
     }
   }
 }

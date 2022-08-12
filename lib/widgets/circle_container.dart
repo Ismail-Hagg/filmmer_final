@@ -61,7 +61,7 @@ class CircleContainer extends StatelessWidget {
              image: image??DecorationImage(
               image:isLocal==false?NetworkImage(link.toString()):
               link!=''? link[0]=='a'?
-              AssetImage(link.toString()) as ImageProvider:FileImage(File(link.toString())): AssetImage('assets/images/google.jpg') ,
+              AssetImage(link.toString()) as ImageProvider:FileImage(File(link.toString())): const AssetImage('assets/images/placeholder.jpg') ,
               fit: fit,
              ),
             shape: BoxShape.circle,
