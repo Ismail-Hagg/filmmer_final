@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:filmmer_final/models/actor_model.dart';
+import 'package:filmmer_final/storage_local/user_data.dart';
 import 'package:get/get.dart';
 
 import '../models/awards_model.dart';
@@ -42,16 +43,32 @@ class ActorController extends GetxController {
   }
 
   getActor() async {
-    FirstPageService()
+    UserData().getLan.then((value){
+      if (value['lan']!= null) {
+         FirstPageService()
         .getActor(
-            'https://api.themoviedb.org/3/person/${_model.id}?api_key=e11cff04b1fcf50079f6918e5199d691&language=en-US')
+            'https://api.themoviedb.org/3/person/${_model.id}?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}')
         .then((value) {
       _model.bio = value.biography;
-      _model.age = calculateAge(DateTime.parse(value.birthday.toString()));
+      _model.age =value.birthday!=null? calculateAge(DateTime.parse(value.birthday.toString()),1):calculateAge(DateTime.parse(value.birthday.toString()),0);
       _model.imdb = value.imdbId;
       getAward(model.imdb.toString(),);
       //test(model.imdb.toString());
       update();
+    });
+      } else {
+         FirstPageService()
+        .getActor(
+            'https://api.themoviedb.org/3/person/${_model.id}?api_key=e11cff04b1fcf50079f6918e5199d691&language=en-US')
+        .then((value) {
+      _model.bio = value.biography;
+      _model.age =value.birthday!=null? calculateAge(DateTime.parse(value.birthday.toString()),1):calculateAge(DateTime.parse(value.birthday.toString()),0);
+      _model.imdb = value.imdbId;
+      getAward(model.imdb.toString(),);
+      //test(model.imdb.toString());
+      update();
+    });
+      }
     });
   }
 
@@ -87,8 +104,11 @@ class ActorController extends GetxController {
   }
 
   //calculate actor's age
-  int calculateAge(DateTime birthDate) {
-    DateTime currentDate = DateTime.now();
+  int calculateAge(DateTime birthDate,int flip) {
+    if (flip==0) {
+      return 0;
+    } else {
+      DateTime currentDate = DateTime.now();
     int age = currentDate.year - birthDate.year;
     int month1 = currentDate.month;
     int month2 = birthDate.month;
@@ -102,6 +122,7 @@ class ActorController extends GetxController {
       }
     }
     return age;
+    }
   }
 
   awardCount(AwardModel model) {

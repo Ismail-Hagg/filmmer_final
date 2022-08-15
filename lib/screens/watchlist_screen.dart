@@ -19,8 +19,8 @@ class WatchList extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: primaryColor,
           elevation: 0,
-          title: const CustomText(
-            text: 'WatchList',
+          title:  CustomText(
+            text: 'watchList'.tr,
             color: lightColor,
           ),
           actions: [
@@ -76,7 +76,7 @@ class WatchList extends StatelessWidget {
                           height: size.height * 0.065,
                           child: Center(
                             child: CustomText(
-                              text: 'Movies',
+                              text: 'movies'.tr,
                               color: controller.tabs.value == 0
                                   ? Colors.white
                                   : Colors.white.withOpacity(0.3),
@@ -105,7 +105,7 @@ class WatchList extends StatelessWidget {
                           height: size.height * 0.065,
                           child: Center(
                             child: CustomText(
-                              text: 'Shows',
+                              text: 'shows'.tr,
                               color: controller.tabs.value == 1
                                   ? Colors.white
                                   : Colors.white.withOpacity(0.3),

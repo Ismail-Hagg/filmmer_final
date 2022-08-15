@@ -15,9 +15,10 @@ import '../models/trailer_model.dart';
 
 class FirstPageService{
 
-  Future<HomeTopMovies> getHomeTopMovies(String api)async{
+  Future<HomeTopMovies> getHomeTopMovies(String api,String lang)async{
     dynamic result ='';
-    var url = Uri.parse(api);
+    var url = Uri.parse(api+lang);
+    print(lang);
     try {
       var response = await http.get(url);
       if (response.statusCode==200) {
@@ -36,6 +37,7 @@ class FirstPageService{
   Future<MovieDetaleModel> getFromImdb(String api)async{
     dynamic result ='';
     var url = Uri.parse(api);
+    print(api);
     try {
       var response = await http.get(url);
       if (response.statusCode==200) {
@@ -44,7 +46,7 @@ class FirstPageService{
       return MovieDetaleModel.fromJson(result);
     } catch (e) {
       print(e.toString());
-      Get.snackbar('Connection Problem', e.toString());
+      Get.snackbar('Connection Problem general', e.toString());
       return MovieDetaleModel();
     }
   }

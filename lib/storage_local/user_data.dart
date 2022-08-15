@@ -15,11 +15,27 @@ class UserData{
       return UserModel(email: 'error', name: 'error', pic: '', userId: '', isLocal: false);  
     }
   }
+
+  Future<Map<String,String>> get getLan async{
+    try {
+      Map<String,String> map = await  _getLan();
+      return map;
+    }catch(e){
+     // print('error : ${e.toString()}');
+      return {};  
+    }
+  }
  
   setUser(UserModel model)async{
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setString(CASHED_USER_DATE, json.encode(model.toMap()));
+  }
+
+  setLan(String lan,String country)async{
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString('lan', lan);
+    await pref.setString('country', country);
   }
 
   Future<UserModel> _getUserData()async{ 
@@ -29,11 +45,24 @@ class UserData{
     return UserModel.fromMap(json.decode(value.toString()));
     
   } 
+  Future<Map<String,String>> _getLan()async{ 
+    Map<String,String> map ={};
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var languange = pref.getString('lan');
+    var country = pref.getString('country');
+
+    map={
+      'lan':languange.toString(),
+      'country':country.toString(),
+    };
+
+    return map;
+    
+  } 
  
-  void deleteUser()async {
+  Future<void> deleteUser()async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.clear();
-    print('we out side');
-   
+    print('all deleted');
   }
 }

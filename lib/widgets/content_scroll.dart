@@ -84,10 +84,10 @@ class ContentScroll extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: GestureDetector(
                             onTap: () {
-                              print(
-                                  detale!.recomendation!.results![index].title);
-                              Get.find<HomeController>().navigatoToDetale(
+                              if (detale!.recomendation!.results![0].id!=0) {
+                                Get.find<HomeController>().navigatoToDetale(
                                   detale!.recomendation!.results![index]);
+                              }
                             },
                             child: MovieWidget(
                               width: size.width * 0.4,
@@ -125,7 +125,6 @@ class ContentScroll extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: GestureDetector(
                               onTap: () {
-                                print(movie!.value.results![index].title);
                                 Get.find<HomeController>().navigatoToDetale(
                                     movie!.value.results![index]);
                               },
@@ -164,17 +163,7 @@ class ContentScroll extends StatelessWidget {
                             if (detale!.cast!.cast![index].profilePath !=
                                 null) {
                               if (detale!.cast!.cast![index].name == 'Actor') {
-                                print('not yet');
                               } else {
-                                // Get.find<HomeController>().actor.name=detale!.cast!.cast![index].name;
-                                // Get.find<HomeController>().actor.pic=imagebase+detale!.cast!.cast![index].profilePath.toString();
-                                // Get.find<HomeController>().actor.age=0;
-                                // Get.find<HomeController>().actor.id=detale!.cast!.cast![index].id.toString();
-                                // Get.find<HomeController>().actor.bio=null;
-                                // Get.find<HomeController>().actor.movies=null;
-                                // Get.find<HomeController>().actor.shows=null;
-                                // Get.create(() =>(ActorController()),permanent: false);
-                                // Get.to(() => ActorScreen(),preventDuplicates: false);
                                 Get.find<HomeController>().goToActor(
                                     detale!.cast!.cast![index].name,
                                     imagebase +
@@ -187,7 +176,6 @@ class ContentScroll extends StatelessWidget {
                                     null);
                               }
                             } else {
-                              print('no info');
                             }
                           },
                           child: Container(

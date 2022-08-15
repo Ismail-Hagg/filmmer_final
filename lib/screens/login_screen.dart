@@ -65,17 +65,17 @@ class LoginScreen extends StatelessWidget {
                     SizedBox(
                       width: size.width * 0.065,
                     ),
-                    const RoundedIcon(imageUrl: 'assets/images/twitter.png'),
+                     RoundedIcon(imageUrl: 'assets/images/twitter.png',tap:()=> controller.support(),),
                     SizedBox(
                       width: size.width * 0.065,
                     ),
-                    const RoundedIcon(imageUrl: 'assets/images/facebook.png'),
+                     RoundedIcon(imageUrl: 'assets/images/facebook.png',tap:()=> controller.support()),
                   ]),
                    SizedBox(
                     height: size.height*0.02,
                   ),
-                  const CustomText(
-                      text: 'or use your email adress',
+                   CustomText(
+                      text: 'emailuse'.tr,
                       color: primaryColor,
                       size: 14,
                       weight: FontWeight.w600),
@@ -86,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                           RoundedInputField(
                             isEmail: TextInputType.emailAddress,
                             isPass: false,
-                            hint: 'Email',
+                            hint: 'email'.tr,
                             icon: Icons.email,
                             sav: (value) {
                               controller.email = value.toString();
@@ -101,7 +101,7 @@ class LoginScreen extends StatelessWidget {
                                   icon: const Icon(Icons.visibility,
                                       color: lightColor)),
                               isPass: controller.obscure.value,
-                              hint: 'Password',
+                              hint: 'pass'.tr,
                               icon: Icons.lock,
                               sav: (value) {
                                 controller.password = value.toString();
@@ -110,27 +110,21 @@ class LoginScreen extends StatelessWidget {
                           ),
                           RoundButton(
                               textColor: lightColor,
-                              text: 'LOGIN',
+                              text: 'login'.tr,
                               press: () { 
                                 _key.currentState!.save();
                                 controller.login(context);
                               }),
                               const SizedBox(height: 5,),
                               UnderParat(
-                                titele: 'Dont Have An Account?',
-                                navigatorText: 'Register Here',
+                                titele: 'account'.tr,
+                                navigatorText: 'make'.tr,
                                 tap: (){
                                   Get.to(()=> SignUpScreen());
                                 },
                               ),
                                SizedBox(height: size.height*0.01,),
-                              UnderParat(
-                                titele: '',
-                                navigatorText: 'Forgot Password',
-                                tap: (){
-                                 // Get.to(()=> RegisterScreening());
-                                },
-                              )
+                              
                         ],
                       ))
                 ],

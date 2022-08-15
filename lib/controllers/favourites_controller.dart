@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:search_page/search_page.dart';
 
+import '../helper/constants.dart';
 import '../models/result_model.dart';
 import '../models/upload.dart';
 import '../models/user_model.dart';
@@ -51,16 +52,16 @@ class FavoritesController extends GetxController {
       newList.insert(0,send);
     } else {
       for (var element in newList) {
-        str.add(element.name);
+        str.add(element.id);
       }
-      newList.removeAt(str.indexOf(send.name));
+      newList.removeAt(str.indexOf(send.id));
     }
     update();
   }
 
   randomnav() {
     if (newList.isEmpty) {
-      Get.snackbar('No Evtries', '');
+      snack('No Entries', '');
     } else {
       Random random = Random();
       int randomNumber = random.nextInt(newList.length);

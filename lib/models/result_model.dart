@@ -13,6 +13,7 @@ class Results {
   String? voteAverage;
   int? voteCount;
   bool? isShow;
+  String? mediaType;
 
   Results(
       {
@@ -28,6 +29,7 @@ class Results {
       this.title,
       this.video,
       this.voteAverage,
+      this.mediaType,
       this.voteCount,this.isShow});
 
   Results.fromJson(Map<String, dynamic> json) {
@@ -45,6 +47,7 @@ class Results {
     voteAverage = json['vote_average']!=null? (json['vote_average']).toStringAsFixed(1):'0';
     voteCount = json['vote_count'];
     isShow = json['first_air_date']!=null?true:false;
+    mediaType = json['media_type']??'';
   }
 
   Map<String, dynamic> toJson() { 

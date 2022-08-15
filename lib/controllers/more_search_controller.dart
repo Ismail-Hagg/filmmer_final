@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../helper/constants.dart';
 import '../models/movie_result_model.dart';
 import '../services/home_screen_service.dart';
+import '../storage_local/user_data.dart';
 import 'home_controller.dart';
 
 class MoreSearchController extends GetxController {
@@ -11,6 +12,7 @@ class MoreSearchController extends GetxController {
   HomeTopMovies model = HomeTopMovies();
   int count = 1;
   String query = '';
+  int indicator = 0;
 
   @override
   void onInit() {
@@ -20,9 +22,12 @@ class MoreSearchController extends GetxController {
   }
 
   getMovies(int page) async {
+    model = HomeTopMovies();
+    indicator=1;
     await FirstPageService()
-        .getHomeTopMovies('${move.link}&page=$page')
+        .getHomeTopMovies('${move.link}&page=$page','')
         .then((value) => {model = value});
+        indicator = 0;
     update();
   }
 
@@ -38,7 +43,7 @@ class MoreSearchController extends GetxController {
       count = 1;
       getMovies(count);
     } else if (count == last) {
-      Get.snackbar('Last Page', '');
+      snack('No More Pages', '');
     } else {
       count++;
       getMovies(count);
@@ -58,28 +63,21 @@ class MoreSearchController extends GetxController {
 
   //search
   search(int page) async {
+    UserData().getLan.then((value)async{
+      model = HomeTopMovies();
+    indicator=1;
     var lnk =
-        'https://api.themoviedb.org/3/search/multi?api_key=e11cff04b1fcf50079f6918e5199d691&language=en-US&query=$query&page=$page';
-    await FirstPageService().getHomeTopMovies(lnk).then((value) => {
+        'https://api.themoviedb.org/3/search/multi?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}&query=$query&page=$page';
+    await FirstPageService().getHomeTopMovies(lnk,'').then((value) => {
           model = value,
           if (model.totalPages == 0)
-            {
-              count = 0,
-              Get.snackbar(
-                '',
-                'No Results',
-                backgroundColor: lightColor,
-                colorText: whiteColor,
-              )
-            }
+            {count = 0, snack('No Results', '')}
           else if (model.totalPages! < page)
-            {
-              Get.snackbar('', 'No More Results',
-                  backgroundColor: lightColor, colorText: whiteColor)
-            }
+            {snack('No More Results', '')}
         });
-
+      indicator = 0;
     update();
+    });
   }
 
   searchUp(String way, int last) {
@@ -88,8 +86,7 @@ class MoreSearchController extends GetxController {
         count++;
         search(count);
       } else {
-        Get.snackbar('', 'No More Results',
-            backgroundColor: lightColor, colorText: whiteColor);
+        snack('No More Results', '');
       }
     } else {
       if (count == 1) {

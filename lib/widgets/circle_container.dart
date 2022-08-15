@@ -1,7 +1,12 @@
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:filmmer_final/controllers/connectivity_controller.dart';
 import 'package:filmmer_final/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../controllers/home_controller.dart';
 
 class CircleContainer extends StatelessWidget {
   final double? height;
@@ -55,13 +60,20 @@ class CircleContainer extends StatelessWidget {
     return Column(
       children: [
         Container(
-          height: height,
+          height: height, 
           width: width,
           decoration: BoxDecoration(
              image: image??DecorationImage(
-              image:isLocal==false?NetworkImage(link.toString()):
+              image:isLocal==false?
+              Get.find<ConnectivityController>().connect.value!=ConnectivityResult.none?
+              NetworkImage(link.toString()):
+              const AssetImage('assets/images/placeholder.jpg')as ImageProvider:
               link!=''? link[0]=='a'?
-              AssetImage(link.toString()) as ImageProvider:FileImage(File(link.toString())): const AssetImage('assets/images/placeholder.jpg') ,
+              AssetImage(link.toString()):
+              //  Get.find<HomeController>().picCheck==false?
+              //  const AssetImage('assets/images/placeholder.jpg'):
+               FileImage(File(link.toString()))as ImageProvider:
+               const AssetImage('assets/images/twitter.png') ,
               fit: fit,
              ),
             shape: BoxShape.circle,

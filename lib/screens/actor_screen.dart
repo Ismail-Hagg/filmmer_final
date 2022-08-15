@@ -50,6 +50,7 @@ class ActorScreen extends StatelessWidget {
                           Color.fromARGB(255, 228, 140, 25),
                           Color.fromARGB(255, 216, 155, 74),
                           Color.fromARGB(179, 230, 177, 3),
+                          
                         ],
                       )
                         )
@@ -60,6 +61,7 @@ class ActorScreen extends StatelessWidget {
                       left: 0,
                       bottom: 0,
                       child: CircleContainer(
+                        color: primaryColor,
                           isLocal: false,
                           fit: BoxFit.cover,
                           link: controller.model.pic.toString(),
@@ -94,7 +96,7 @@ class ActorScreen extends StatelessWidget {
                                 size: size.width * 0.05),
                             CustomText(
                                 text:
-                                    'Age : ${controller.model.age.toString()} Years Old',
+                                    '${'age'.tr} : ${controller.model.age.toString()} ${'years'.tr}',
                                 color: lightColor,
                                 size: size.width * 0.04)
                           ])),
@@ -104,13 +106,19 @@ class ActorScreen extends StatelessWidget {
                       height: size.height * 0.15,
                       child: SingleChildScrollView(
                           child: controller.model.bio != null
-                              ? CustomText(
+                              ? controller.model.bio==''?
+                               CustomText(
+                                  text: 'nobio'.tr,
+                                  color: whiteColor,
+                                  size: size.width * 0.035):
+                              CustomText(
+                                align: TextAlign.left,
                                   text: controller.model.bio,
                                   color: whiteColor,
                                   size: size.width * 0.035)
                               : Center(
                                   child: CustomText(
-                                      text: 'Biography',
+                                      text: 'bio'.tr,
                                       color: whiteColor,
                                       size: size.width * 0.035),
                                 )),
@@ -130,7 +138,7 @@ class ActorScreen extends StatelessWidget {
                               controller.flip(0);
                             },
                             child: Container(
-                              //width:size.width*0.3,
+                              width:size.width*0.25,
                               decoration: BoxDecoration(
                                   border:
                                       Border.all(width: 1, color: lightColor),
@@ -139,15 +147,12 @@ class ActorScreen extends StatelessWidget {
                                       ? Colors.transparent
                                       : lightColor),
                               child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: CustomText(
-                                      text: '  Movies  ',
-                                      size: 16,
-                                      color: controller.count == 1
-                                          ? lightColor
-                                          : Colors.white),
-                                ),
+                                child: CustomText(
+                                    text: 'movies'.tr,
+                                    size: size.width * 0.04,
+                                    color: controller.count == 1
+                                        ? lightColor
+                                        : Colors.white),
                               ),
                             ),
                           ),
@@ -156,7 +161,7 @@ class ActorScreen extends StatelessWidget {
                               controller.flip(1);
                             },
                             child: Container(
-                              //width:size.width*0.3,
+                              width:size.width*0.25,
                               decoration: BoxDecoration(
                                   border:
                                       Border.all(width: 1, color: lightColor),
@@ -165,15 +170,12 @@ class ActorScreen extends StatelessWidget {
                                       ? Colors.transparent
                                       : lightColor),
                               child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: CustomText(
-                                      text: 'Tv Shows',
-                                      size: 16,
-                                      color: controller.count == 0
-                                          ? lightColor
-                                          : Colors.white),
-                                ),
+                                child: CustomText(
+                                    text: 'shows'.tr,
+                                    size: size.width * 0.04,
+                                    color: controller.count == 0
+                                        ? lightColor
+                                        : Colors.white),
                               ),
                             ),
                           )
@@ -181,12 +183,12 @@ class ActorScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  controller.awardMap.isNotEmpty?
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 10),
                     child: Container(
                         height: size.height * 0.1,
-                        //color:Colors.red,
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             physics: const BouncingScrollPhysics(),
@@ -217,7 +219,7 @@ class ActorScreen extends StatelessWidget {
                               );
                             },
                             itemCount: controller.awardMap.length)),
-                  ),
+                  ):Container(),
                   Container(
                     height: (size.height * 0.32) - 36,
                     child: ListView.builder(

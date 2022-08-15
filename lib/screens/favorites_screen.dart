@@ -21,7 +21,7 @@ class FavoritesScreen extends StatelessWidget {
         backgroundColor: primaryColor,
         // centerTitle: true,
         elevation: 0,
-        title: const CustomText(text: 'Favorites', color: lightColor),
+        title:  CustomText(text: 'favourite'.tr, color: lightColor),
         actions: [
           IconButton(
             icon: GetBuilder<FavoritesController>(

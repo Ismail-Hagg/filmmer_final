@@ -47,32 +47,32 @@ class HomeScreen extends StatelessWidget {
                           physics: const BouncingScrollPhysics(),
                           children: [
                               ContentScroll(
-                                title: 'Upcoming Movies',
-                                isArrow: true,
+                                title: 'upcoming'.tr,
+                                isArrow: true, 
                                 isCast: false,
                                 movie: controller.coming,
                                 link: upcoming,
                               ),
                               ContentScroll(
-                                  title: 'Popular Movies',
+                                  title: 'popularMovies'.tr,
                                   isArrow: true,
                                   isCast: false,
                                   movie: controller.popularMovies,
                                   link: pop),
                               ContentScroll(
-                                  title: 'Popular Shows',
+                                  title: 'popularShows'.tr,
                                   isArrow: true,
                                   isCast: false,
                                   movie: controller.popularShows,
                                   link: popularTv),
                               ContentScroll(
-                                  title: 'Top Rated Movies',
+                                  title: 'topMovies'.tr,
                                   isArrow: true,
                                   isCast: false,
                                   movie: controller.topRatedMovies,
                                   link: top),
                               ContentScroll(
-                                  title: 'Top Rated Shows',
+                                  title: 'topShowa'.tr,
                                   isArrow: true,
                                   isCast: false,
                                   movie: controller.topRatedShows,
@@ -86,16 +86,15 @@ class HomeScreen extends StatelessWidget {
                               child: CircularProgressIndicator(
                               color: lightColor,
                             ))
-                          : Center(
-                              child: GestureDetector(
-                              onTap: () => builder.load(),
-                              child: CustomText(
-                                text: 'Click to Refresh',
-                                color: whiteColor,
+                          : Center( 
+                              child: CustomText( 
+                                text: 'internet'.tr,
+                                color: whiteColor, 
                                 size: size.width * 0.055,
-                              ),
-                            )),
+                              )), 
                 )
+
+        // body:Obx(()=>Center(child: CustomText(text: controller.internet.toString(),color: whiteColor),))
                 );
   }
-}
+} 

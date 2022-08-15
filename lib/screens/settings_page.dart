@@ -2,6 +2,8 @@ import 'package:filmmer_final/screens/test.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../controllers/auth_cocontroller.dart';
+import '../controllers/settings_controller.dart';
 import '../helper/constants.dart';
 import '../models/user_model.dart';
 import '../storage_local/user_data.dart';
@@ -9,72 +11,147 @@ import '../widgets/circle_container.dart';
 import '../widgets/custom_text.dart';
 
 class Settings extends StatelessWidget {
-  const Settings({Key? key}) : super(key: key);
+   Settings({Key? key}) : super(key: key);
+  final SettingsController controller = Get.put(SettingsController());
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    var topPadding = MediaQuery.of(context).padding.top;
     return Scaffold(
-      backgroundColor: primaryColor,
-      appBar: AppBar(
+        backgroundColor: primaryColor,
+        appBar: AppBar(
+          title:  CustomText(
+            text: 'settings'.tr,
+            color: lightColor,
+          ),
           backgroundColor: primaryColor,
           elevation: 0,
           centerTitle: true,
-          ),
-      body: Column(
-        children: [
-          Container(
-            height: size.height * 0.3,
-            // color:Colors.red,
-            child: Center(
-                child: FutureBuilder(
-              future: UserData().getUser,
-              builder:
-                  (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Stack(
-                    children: [
-                      CircleContainer(
-                        fit: BoxFit.cover,
-                        link: snapshot.data!.pic,
-                        isLocal: snapshot.data!.isLocal,
-                        color: whiteColor,
-                        width: size.width * 0.5,
-                        height: size.width * 0.5,
-                        borderColor: lightColor,
-                        borderWidth: 2,
-                      ),
-                      Positioned(
-                        bottom: size.width * 0.11,
-                        right: size.width * 0.31,
-                        child: GestureDetector(
-                          onTap: (){
-                            Get.to(()=>Test());
-                          },
-                          child: CircleContainer(
-                            link:'',
-                            width: size.width * 0.08,
-                            height: size.width * 0.08,
-                            color:Colors.black,
-                            borderColor:whiteColor,
-                            borderWidth: 1,
+         
+        ),
+        body: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+          return Column(
+            children: [
+              Container(
+                height: constraints.maxHeight * 0.3,
+                child: GetBuilder<SettingsController>(
+                  init:Get.find<SettingsController>(),
+                  builder:(controll)=> controll.counter==0? FutureBuilder(
+                      future: UserData().getUser,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<UserModel> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return CircleContainer(
+                            fit: BoxFit.cover,
+                            link: snapshot.data!.pic,
+                            textUp: snapshot.data!.name,
+                            textDown: snapshot.data!.email,
+                            colorUp: whiteColor,
+                            colorDown: whiteColor,
+                            sizeUp: constraints.maxHeight * 0.025,
+                            sizeDown: constraints.maxHeight * 0.025,
+                            isLocal: snapshot.data!.isLocal,
+                            color: whiteColor,
+                            width: constraints.maxHeight * 0.2,
+                            height: constraints.maxHeight * 0.2,
+                            borderColor: lightColor,
+                            borderWidth: 2,
+                            spaceUp: constraints.maxHeight * 0.02,
+                          );
+                        } else {
+                          return const Center(
+                              child:
+                                  CircularProgressIndicator(color: lightColor));
+                        }
+                      }):CircleContainer(
+                            fit: BoxFit.cover,
+                            link: controll.path,
+                            textUp: controll.name,
+                            textDown: controll.email, 
+                            colorUp: whiteColor,
+                            colorDown: whiteColor,
+                            sizeUp: constraints.maxHeight * 0.025,
+                            sizeDown: constraints.maxHeight * 0.025,
+                            isLocal: true,
+                            color: whiteColor,
+                            width: constraints.maxHeight * 0.2,
+                            height: constraints.maxHeight * 0.2,
+                            borderColor: lightColor,
+                            borderWidth: 2,
+                            spaceUp: constraints.maxHeight * 0.02,
                           ),
-                        ),
+                ),
+              ),
+              Container(
+                height: constraints.maxHeight * 0.7,
+                child: Card(
+                  color:mainColor,
+                  child: ListView(
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                            leading: const Icon(Icons.photo, color: lightColor),
+                            title:  CustomText(
+                                text: "changepic".tr, color: whiteColor),
+                            onTap: ()=> controller.openImagePicker()),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                            leading:
+                                const Icon(Icons.language, color: lightColor),
+                            title: CustomText(
+                                text: "changelanguage".tr, color: whiteColor),
+                            onTap: () {
+                              Get.defaultDialog(
+                                title: 'lans'.tr,
+                                content:Column(
+                                  children:[
+                                    ListTile(
+                                      onTap: ()=> controller.change('en', 'US'),
+                                      title:  CustomText(
+                                        text: "en".tr,
+                                      ),
+                                    ),
+                                    ListTile(
+                                      onTap: ()=> controller.change('ar', 'SA'),
+                                      title:  CustomText(
+                                        text: "ar".tr,
+                                      ),
+                                    )
+                                  ]
+                                )
+                              );
+                            }),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                            leading: const Icon(Icons.logout, color: lightColor),
+                            title:  CustomText(
+                                text: "logout".tr, color: whiteColor),
+                            onTap: () {
+                              Get.defaultDialog(
+                                title: '',
+                                content: Column(
+                                  children: [
+                                    Text("logoutq".tr),
+                                    TextButton(onPressed: (){
+                                      Get.find<AuthController>().signOut();
+                                    }, child:  CustomText(text: "answer".tr))
+                                  ],
+                                ),
+                              );
+                            }),
                       )
                     ],
-                  );
-                }
-                return const Center(
-                    child: CircularProgressIndicator(color: lightColor));
-              },
-            )),
-          ),
-        ],
-      ),
-    );
+                  ),
+                ),
+              )
+            ],
+          );
+        }));
   }
 }
-
-
-

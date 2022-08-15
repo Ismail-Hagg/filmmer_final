@@ -1,3 +1,7 @@
+//import 'dart:html';
+
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -19,9 +23,11 @@ import '../screens/movie_detale_screen.dart';
 import '../screens/test_screen.dart';
 import '../services/home_screen_service.dart';
 import '../storage_local/local_database.dart';
+import '../storage_local/user_data.dart';
 import 'actor_controller.dart';
 import 'connectivity_controller.dart';
 import 'movie_detale_controller.dart';
+import 'dart:io' as io;
 
 class HomeController extends GetxController {
   ActorModel _actor = ActorModel();
@@ -80,44 +86,60 @@ class HomeController extends GetxController {
   final TrailerModel _trailer = TrailerModel();
   TrailerModel get trailer => _trailer;
 
-
-
   var count = 0.obs;
   var build = false.obs;
+  var track = 0;
 
-  Rx<ConnectivityResult> internet =
-      Rx(Get.find<ConnectivityController>().connect);
+  bool picCheck = true;
+
+  Rx<ConnectivityResult> internet = Get.find<ConnectivityController>().connect;
   @override
   void onInit() async {
+    build.value = internet.value != ConnectivityResult.none ? true : false;
     super.onInit();
-    //ever(internet, (_)=>check);
+    load();
+    existPic();
+    ever(internet, (val) => check());
   }
 
-  @override
-  void onReady() async {
-    load();
-    super.onReady();
+  Future<void> existPic() async {
+    await UserData().getUser.then((value) {
+      print(value.pic);
+      print(value.isLocal);
+      File(value.pic).exists().then((value) => chain(value));
+    });
+  }
+
+  chain(bool val) {
+    picCheck = val;
+    print(picCheck);
   }
 
   check() async {
-    print('change occured');
-    if (internet.value != ConnectivityResult.none) {
-      load();
-      build.value = true;
-    } else {
-      build.value = false;
+    if (internet.value == ConnectivityResult.none) {
+      _coming.value.results!.clear();
     }
+    load();
+    // if (internet.value != ConnectivityResult.none) {
+    //   load();
+    //   build.value = true;
+    // } else {
+    //   build.value = false;
+    // }
   }
+
 
   //fetch data from api
   load() async {
     count.value = 0;
-    if (Get.find<ConnectivityController>().connect != ConnectivityResult.none) {
-      getUpcoming();
-      getpopularMovies();
-      getpopularShows();
-      getTopRatedMovies();
-      getTopRatedShows();
+    if (internet.value != ConnectivityResult.none) {
+      UserData().getLan.then((value){
+        getUpcoming(upcoming,'${value['lan']}-${value['country']}');
+      getpopularMovies(pop,'${value['lan']}-${value['country']}');
+      getpopularShows(popularTv,'${value['lan']}-${value['country']}');
+      getTopRatedMovies(top,'${value['lan']}-${value['country']}');
+      getTopRatedShows(topTv,'${value['lan']}-${value['country']}');
+      });
       build.value = true;
       update();
     } else {
@@ -127,43 +149,44 @@ class HomeController extends GetxController {
     count.value = 1;
   }
 
-  getUpcoming() async {
-    await FirstPageService().getHomeTopMovies(upcoming).then((value) => {
+  getUpcoming(String link,String lan) async {
+    await FirstPageService().getHomeTopMovies(link,lan).then((value) => {
           _coming.value = value,
         });
   }
 
-  getpopularMovies() async {
-    await FirstPageService().getHomeTopMovies(pop).then((value) => {
+  getpopularMovies(String link,String lan) async {
+    await FirstPageService().getHomeTopMovies(link,lan).then((value) => {
           _popularMovies.value = value,
         });
   }
 
-  getpopularShows() async {
-    await FirstPageService().getHomeTopMovies(popularTv).then((value) => {
+  getpopularShows(String link,String lan) async {
+    await FirstPageService().getHomeTopMovies(link,lan).then((value) => {
           _popularShows.value = value,
         });
   }
 
-  getTopRatedMovies() async {
-    await FirstPageService().getHomeTopMovies(top).then((value) => {
+  getTopRatedMovies(String link,String lan) async {
+    await FirstPageService().getHomeTopMovies(link,lan).then((value) => {
           _topRatedMovies.value = value,
         });
   }
 
-  getTopRatedShows() async {
+  getTopRatedShows(String link,String lan) async {
     try {
-      await FirstPageService().getHomeTopMovies(topTv).then((value) => {
+      await FirstPageService().getHomeTopMovies(link,lan).then((value) => {
             _topRatedShows.value = value,
           });
     } catch (e) {
-      Get.snackbar(e.toString(), '');
+      snack('Error', e.toString());
     }
   }
 
   //navigate to the detale screen
   navigatoToDetale(Results? res) async {
-    if (Get.find<ConnectivityController>().connect != ConnectivityResult.none) {
+    if (Get.find<ConnectivityController>().connect.value !=
+        ConnectivityResult.none) {
       _movied.value = MovieDetaleModel(
           id: res!.id,
           posterPath: res.posterPath,
@@ -244,17 +267,18 @@ class HomeController extends GetxController {
       Get.to(() => MovieDetale(tag: res.title.toString()),
           preventDuplicates: false);
     } else {
-      Get.snackbar('Error', 'No Internet connection');
+      snack('Error', 'No Internet connection');
     }
   }
 
   //navigate to search page
   goToSearch(bool isSearch, String link, String title) {
-    if (Get.find<ConnectivityController>().connect != ConnectivityResult.none) {
+    if (Get.find<ConnectivityController>().connect.value !=
+        ConnectivityResult.none) {
       move = Move(isSearch: isSearch, link: link, title: title);
       Get.to(() => MoreSearchScreen());
     } else {
-      Get.snackbar('Error', 'No Internet connection');
+      snack('Error', 'No Internet connection');
     }
   }
 
@@ -274,7 +298,7 @@ class HomeController extends GetxController {
       Get.create(() => (ActorController()), permanent: false);
       Get.to(() => ActorScreen(), preventDuplicates: false);
     } else {
-      Get.snackbar('Error', 'No Internet connection');
+      snack('Error', 'No Internet connection');
     }
   }
 }

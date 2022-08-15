@@ -40,10 +40,10 @@ class MoreSearchScreen extends StatelessWidget {
                     cursorColor: lightColor,
                     autofocus: true,
                     style: const TextStyle(color: lightColor),
-                    decoration: const InputDecoration(
+                    decoration:  InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Search',
-                      hintStyle: TextStyle(
+                      hintText: 'search'.tr,
+                      hintStyle: const TextStyle(
                         color: lightColor,
                       ),
                     ),
@@ -110,8 +110,15 @@ class MoreSearchScreen extends StatelessWidget {
                                   controll.model.results!.length, (index) {
                                 return GestureDetector(
                                   onTap: () {
-                                    Get.find<HomeController>().navigatoToDetale(
+                                    if (controll.model.results![index].mediaType=='person') {
+                                      
+                                    } else {
+                                      Get.find<HomeController>().navigatoToDetale(
                                         controll.model.results![index]);
+                                    }
+                                    //print(controll.model.results![index].mediaType);
+                                    // Get.find<HomeController>().navigatoToDetale(
+                                    //     controll.model.results![index]);
                                   },
                                   child: MovieWidget(
                                     width: size.width * 0.32,
@@ -131,7 +138,7 @@ class MoreSearchScreen extends StatelessWidget {
                     ),
                   ),
                 ])
-              : Container()),
+              : controller.indicator==1? const Center(child: CircularProgressIndicator(color: lightColor),):Container()),
     );
   }
 }

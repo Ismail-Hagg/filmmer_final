@@ -8,7 +8,7 @@ import '../storage_local/local_database.dart';
 
 class ConnectivityController extends GetxController {
   Rx<ConnectivityResult> _connectionStatus = Rx(ConnectivityResult.none);
-  ConnectivityResult get connect => _connectionStatus.value;
+  Rx<ConnectivityResult> get connect => _connectionStatus;
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
@@ -22,19 +22,6 @@ class ConnectivityController extends GetxController {
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     super.onInit();
   }
-
-  // addLocal(TestModel model) async {
-  //   var db = CartDatabasrHelper.db;
-  //   await db.insertUser(model);
-
-  //   update();
-  // }
-
-  // getAll() async {
-  //   var db = CartDatabasrHelper.db;
-  //   test = await db.getAllProducts();
-  //   update();
-  // }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initConnectivity() async {

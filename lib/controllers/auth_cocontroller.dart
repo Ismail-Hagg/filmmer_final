@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helper/constants.dart';
 import '../models/upload.dart';
@@ -19,7 +20,7 @@ import '../storage_local/user_data.dart';
 
 class AuthController extends GetxController {
   final dbHelper = DatabaseHelper.instance;
-  
+
   final Rxn<User> _user = Rxn<User>();
   User? get user => _user.value;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -49,8 +50,8 @@ class AuthController extends GetxController {
     try {
       final dynamic googleUser = await _googleSignIn.signIn() ?? '';
       if (googleUser == '') {
-        Get.snackbar('Aborted','',
-          backgroundColor: lightColor);
+        snack('Aborted', '');
+
         count.value = 0;
       } else {
         GoogleSignInAuthentication authy = await googleUser!.authentication;
@@ -58,17 +59,16 @@ class AuthController extends GetxController {
         final AuthCredential credential = GoogleAuthProvider.credential(
             idToken: authy.idToken, accessToken: authy.accessToken);
         await _auth.signInWithCredential(credential).then((user) async => {
-              saveUser(user,true),
+              saveUser(user, true),
               getDocs(user.user!.uid),
             });
       }
     } on FirebaseAuthException catch (e) {
-      Get.snackbar('fuck Firebase: ${e.code}', e.toString(),
-          backgroundColor: lightColor);
+      snack('Firebase Error', e.toString());
+
       count.value = 0;
     } catch (e) {
-      Get.snackbar('fuck: ', e.toString(),
-          backgroundColor: lightColor, colorText: Colors.white);
+      snack('Error', e.toString());
       count.value = 0;
     }
   }
@@ -78,8 +78,7 @@ class AuthController extends GetxController {
     FocusScope.of(context).unfocus();
     count.value = 1;
     if (name == '') {
-      Get.snackbar('error', 'Add Username',
-          snackPosition: SnackPosition.BOTTOM);
+      snack('error', 'Add Username');
       count.value = 0;
     } else {
       try {
@@ -87,16 +86,15 @@ class AuthController extends GetxController {
             .createUserWithEmailAndPassword(
                 email: email.toString(), password: password.toString())
             .then((user) async => {
-                  saveUser(user,false),
+                  saveUser(user, false),
                   Get.offAll(() => ControllScreen()),
                 });
       } on FirebaseAuthException catch (i) {
-        Get.snackbar('error', i.code.toString(),
-            snackPosition: SnackPosition.BOTTOM);
+        snack('error', i.code.toString());
+
         count.value = 0;
       } catch (e) {
-        Get.snackbar('error', e.toString(),
-            snackPosition: SnackPosition.BOTTOM);
+        snack('error', e.toString());
         count.value = 0;
       }
     }
@@ -110,30 +108,38 @@ class AuthController extends GetxController {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((user) async => {
-                FireStoreService().getCurrentUser(user.user!.uid).then((value) async{
-                  setUser(UserModel.fromMap(value.data() as Map<dynamic, dynamic>));
+                FireStoreService()
+                    .getCurrentUser(user.user!.uid)
+                    .then((value) async {
+                  setUser(
+                      UserModel.fromMap(value.data() as Map<dynamic, dynamic>));
                   getDocs(user.user!.uid);
                 })
               });
     } on FirebaseAuthException catch (e) {
-      Get.snackbar('error', e.toString(), snackPosition: SnackPosition.BOTTOM);
+      snack('Firebase Error', e.code);
       count.value = 0;
     } catch (e) {
-      Get.snackbar('error', e.toString(), snackPosition: SnackPosition.BOTTOM);
+      snack('Error', e.toString());
       count.value = 0;
     }
-  } 
+  }
 
   //signout function
   Future<void> signOut() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.clear();
     await _auth.signOut();
     await _googleSignIn.signOut();
-    UserData().deleteUser;
     await dbHelper.deleteAll(DatabaseHelper.showTable);
     await dbHelper.deleteAll(DatabaseHelper.movieTable);
     await dbHelper.deleteAll(DatabaseHelper.table);
     update();
     Get.offAll(() => ControllScreen());
+  }
+
+  support() {
+    snack('otherSocial'.tr, '');
   }
 
   // controlls the switching of obscure text on and off
@@ -153,7 +159,7 @@ class AuthController extends GetxController {
     } else {
       path = result.files.single.path;
       _image = File(path.toString());
-      
+
       print('path is here $path');
       update();
     }
@@ -167,26 +173,24 @@ class AuthController extends GetxController {
     email = '';
     password = '';
     _image = null;
-     update();
+    update();
   }
 
-    // save user data locally and in firestore
-    void saveUser(UserCredential user,bool social) async {
+  // save user data locally and in firestore
+  void saveUser(UserCredential user, bool social) async {
     UserModel model = UserModel(
-      userId: user.user!.uid,
-      email: user.user?.email as String,
-      name: social==true? user.user?.displayName as String : name,
-      pic: social==true?
-          user.user?.photoURL as String
-          : _image == null
-              ? 'assets/images/placeholder.jpg'
-              : path.toString(),
-      isLocal: !social
-         
-    );
+        userId: user.user!.uid,
+        email: user.user?.email as String,
+        name: social == true ? user.user?.displayName as String : name,
+        pic: social == true
+            ? user.user?.photoURL as String
+            : _image == null
+                ? 'assets/images/placeholder.jpg'
+                : path.toString(),
+        isLocal: !social);
 
     await FireStoreService().addUsers(model);
-     setUser(model);
+    setUser(model);
   }
 
   Future getDocs(String userId) async {
@@ -207,7 +211,7 @@ class AuthController extends GetxController {
         .collection('showWatchList')
         .get();
     if (fav.docs.isNotEmpty) {
-      send=[];
+      send = [];
       for (int i = 0; i < fav.docs.length; i++) {
         var a = fav.docs[i].data();
         send.add(FirebaseSend.fromMapPre(a as Map<String, dynamic>));
@@ -216,7 +220,7 @@ class AuthController extends GetxController {
     }
 
     if (mov.docs.isNotEmpty) {
-      send=[];
+      send = [];
       for (int i = 0; i < mov.docs.length; i++) {
         var a = mov.docs[i].data();
         send.add(FirebaseSend.fromMapPre(a as Map<String, dynamic>));
@@ -225,7 +229,7 @@ class AuthController extends GetxController {
     }
 
     if (sho.docs.isNotEmpty) {
-      send=[];
+      send = [];
       for (int i = 0; i < sho.docs.length; i++) {
         var a = sho.docs[i].data();
         send.add(FirebaseSend.fromMapPre(a as Map<String, dynamic>));

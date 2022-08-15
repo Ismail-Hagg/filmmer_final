@@ -1,6 +1,7 @@
 import 'package:filmmer_final/controllers/home_controller.dart';
 import 'package:filmmer_final/controllers/watchlist_controller.dart';
 import 'package:filmmer_final/helper/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/actor_model.dart';
 import '../models/movie_detale_model.dart';
@@ -16,6 +17,7 @@ import '../storage_local/user_data.dart';
 import 'favourites_controller.dart';
 
 class MovieDetaleController extends GetxController {
+  int cuntr = 0;
   final dbHelper = DatabaseHelper.instance;
 
   MovieDetaleModel _detales = MovieDetaleModel();
@@ -77,35 +79,27 @@ class MovieDetaleController extends GetxController {
         time: DateTime.now().toString(),
         genres: lst);
     if (flip.value == 0) {
-      if(Get.isRegistered<FavoritesController>()==true){
-        Get.find<FavoritesController>().fromDetale(fire,true);
+      if (Get.isRegistered<FavoritesController>() == true) {
+        Get.find<FavoritesController>().fromDetale(fire, true);
       }
       await dbHelper
           .insert(fire.toMapLocal(), DatabaseHelper.table)
           .then((value) async {
-        Get.snackbar('Added To Favorites', '',
-            duration: const Duration(seconds: 1),
-            backgroundColor: lightColor,
-            colorText: whiteColor);
+        snack('favadd'.tr, '');
         await FireStoreService().upload(_usermodel.userId, fire, flip.value);
-         flip.value = 1;
+        flip.value = 1;
         update();
       });
     } else {
-      if(Get.isRegistered<FavoritesController>()==true){
-       Get.find<FavoritesController>().fromDetale(fire,false);
+      if (Get.isRegistered<FavoritesController>() == true) {
+        Get.find<FavoritesController>().fromDetale(fire, false);
       }
-       await dbHelper
-          .delete(DatabaseHelper.table,fire.id)
-          .then((value) async {
-        Get.snackbar('Deleted From Favorites', '',
-            duration: const Duration(seconds: 1),
-            backgroundColor: lightColor,
-            colorText: whiteColor);
+      await dbHelper.delete(DatabaseHelper.table, fire.id).then((value) async {
+        snack('favalready'.tr, '');
         await FireStoreService().upload(_usermodel.userId, fire, flip.value);
         flip.value = 0;
         update();
-      }); 
+      });
     }
   }
 
@@ -116,7 +110,7 @@ class MovieDetaleController extends GetxController {
         : DatabaseHelper.showTable;
     await dbHelper
         .querySelect(table, detales.id.toString())
-        .then((value) async { 
+        .then((value) async {
       if (value.isEmpty) {
         List<String> lst = [];
         String show = '';
@@ -136,60 +130,58 @@ class MovieDetaleController extends GetxController {
         fire.isShow == true ? show = 'show' : show = 'movie';
 
         await dbHelper.insert(fire.toMapLocal(), table).then((value) async {
-           if(Get.isRegistered<WatchListController>()==true){
-       Get.find<WatchListController>().fromDetale(fire,fire.isShow);
-      }
-          Get.snackbar('Added WatchList', '',
-              duration: const Duration(seconds: 1),
-              backgroundColor: lightColor,
-              colorText: whiteColor);
+          if (Get.isRegistered<WatchListController>() == true) {
+            Get.find<WatchListController>().fromDetale(fire, fire.isShow);
+          }
+          snack('watchadd'.tr, '');
+
           await FireStoreService().watchList(_usermodel.userId, fire, show);
         });
       } else {
-        Get.snackbar('Already In WatchList', '',
-            duration: const Duration(seconds: 1),
-            backgroundColor: lightColor,
-            colorText: whiteColor);
+        snack('watchalready'.tr, '');
       }
     });
   }
 
   //fetch movie or show detales from api
   loadDetales(MovieDetaleModel res) async {
-    load = 0;
+    UserData().getLan.then((value) async {
+      
+        load = 0;
     var show = res.isShow == true ? 'tv' : 'movie';
     try {
       await FirstPageService()
           .getFromImdb(
-        'https://api.themoviedb.org/3/$show/${res.id}?api_key=e11cff04b1fcf50079f6918e5199d691&language=en-US',
+        'https://api.themoviedb.org/3/$show/${res.id}?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}',
       )
           .then((value) async {
         _detales = value;
       });
       await FirstPageService()
           .getCast(
-              'https://api.themoviedb.org/3/$show/${res.id}/credits?api_key=e11cff04b1fcf50079f6918e5199d691&language=en-US')
+              'https://api.themoviedb.org/3/$show/${res.id}/credits?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}')
           .then((value) => {_detales.cast = value});
 
       await FirstPageService()
           .getRecomended(
-              'https://api.themoviedb.org/3/$show/${res.id}/recommendations?api_key=e11cff04b1fcf50079f6918e5199d691&language=en-US&page=1')
+              'https://api.themoviedb.org/3/$show/${res.id}/recommendations?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}')
           .then((value) {
         _detales.recomendation = value;
       });
       await FirstPageService()
           .getTrailer(
-              'https://api.themoviedb.org/3/$show/${res.id}/videos?api_key=e11cff04b1fcf50079f6918e5199d691&language=en-US')
+              'https://api.themoviedb.org/3/$show/${res.id}/videos?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}')
           .then((value) {
-            print('https://api.themoviedb.org/3/$show/${res.id}/videos?api_key=e11cff04b1fcf50079f6918e5199d691&language=en-US');
         _trailer = value;
       });
     } catch (e) {
-      Get.snackbar(e.toString(), '');
+      snack('Error', e.toString());
     }
 
     load = 1;
     update();
+      
+    });
   }
 
   //navigate to actor page
@@ -203,8 +195,8 @@ class MovieDetaleController extends GetxController {
   //navigate to trailer page
   goToTrailer() {
     if (load == 0) {
-    } else if (Get.find<HomeController>().trailer.results!.isEmpty == true) {
-      Get.snackbar('No Trailer', '');
+    } else if (_trailer.results!.isEmpty == true) {
+      snack('trailer'.tr, '');
     } else {
       Get.find<HomeController>().trailer.results = _trailer.results;
       Get.to(

@@ -1,3 +1,4 @@
+import 'package:filmmer_final/helper/constants.dart';
 import 'package:filmmer_final/storage_local/user_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +125,7 @@ class WatchListController extends GetxController {
           releaseDate: moviesLocal[randomNumber].releaseDate,
         ));
       } else {
-        Get.snackbar('No Entries', '');
+        snack('No Entries', '');
       }
     } else {
       if (showLocal.isNotEmpty) {
@@ -139,7 +140,7 @@ class WatchListController extends GetxController {
           releaseDate: showLocal[randomNumber].releaseDate,
         ));
       } else {
-        Get.snackbar('No Entries', '');
+        snack('No Entries', '');
       }
     }
   }

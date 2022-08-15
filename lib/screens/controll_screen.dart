@@ -20,4 +20,3 @@ class ControllScreen extends StatelessWidget {
     );
   }
 }
- 

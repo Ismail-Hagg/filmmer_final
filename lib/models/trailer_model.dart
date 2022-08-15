@@ -62,7 +62,7 @@ class Trail {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data =  Map<String, dynamic>();
     data['iso_639_1'] = iso6391;
     data['iso_3166_1'] =iso31661;
     data['name'] =name;

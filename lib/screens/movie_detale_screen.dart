@@ -12,9 +12,7 @@ import '../widgets/custom_text.dart';
 
 class MovieDetale extends StatelessWidget {
   final String tag;
-   MovieDetale({Key? key, required this.tag}) : super(key: key);
-
-
+  MovieDetale({Key? key, required this.tag}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,237 +20,248 @@ class MovieDetale extends StatelessWidget {
     return Scaffold(
       backgroundColor: mainColor,
       body: SingleChildScrollView(
-        child: 
-        GetBuilder<MovieDetaleController>(
+        child: GetBuilder<MovieDetaleController>(
           init: Get.find<MovieDetaleController>(),
-          builder:(controller)=> 
-             Column(children: [
-              Container(
-                height: size.height * 0.44,
-                child: Stack(children: [
-                     Container(
-                      height: size.height * 0.4,
-                      child: ShapeOfView(
-                          elevation: 25,
-                          shape: ArcShape(
-                              direction: ArcDirection.Outside,
-                              height: 50,
-                              position: ArcPosition.Bottom),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                            image:controller.detales.posterPath==null?const AssetImage('assets/images/placeholder.jpg')as ImageProvider:
-                             NetworkImage( imagebase+controller.detales.posterPath.toString()),
-                            fit: BoxFit.cover,
-                          )))),
-                    ),
-                  
-                  Positioned(
-                    right: 0,
-                    left: 0,
-                    bottom: 0,
-                    child: RawMaterialButton(
-                      padding: const EdgeInsets.all(10),
-                      elevation: 12,
-                      onPressed: () {
-                        controller.goToTrailer();
-                      },
-                      shape: const CircleBorder(),
-                      fillColor: whiteColor, 
-                      child:controller.load==0?
-                          const Center(child: CircularProgressIndicator(color:lightColor),)
-                          :const Icon(Icons.play_arrow, color: lightColor, size: 50),
-                    ),
+          builder: (controller) => Column(children: [
+            Container(
+              height: size.height * 0.44,
+              child: Stack(children: [
+                Container(
+                  height: size.height * 0.4,
+                  child: ShapeOfView(
+                      elevation: 25,
+                      shape: ArcShape(
+                          direction: ArcDirection.Outside,
+                          height: 50,
+                          position: ArcPosition.Bottom),
+                      child: Container(
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                        image: controller.detales.posterPath == null
+                            ? const AssetImage('assets/images/placeholder.jpg')
+                                as ImageProvider
+                            : NetworkImage(imagebase +
+                                controller.detales.posterPath.toString()),
+                        fit: BoxFit.cover,
+                      )))),
+                ),
+                Positioned(
+                  right: 0,
+                  left: 0,
+                  bottom: 0,
+                  child: RawMaterialButton(
+                    padding: const EdgeInsets.all(10),
+                    elevation: 12,
+                    onPressed: () {
+                      controller.goToTrailer();
+                    },
+                    shape: const CircleBorder(),
+                    fillColor: whiteColor,
+                    child: controller.load == 0
+                        ? const Center(
+                            child: CircularProgressIndicator(color: lightColor),
+                          )
+                        : const Icon(Icons.play_arrow,
+                            color: lightColor, size: 50),
                   ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                                splashRadius: 15,
-                                icon: const Icon(Icons.add,
-                                    color: whiteColor, size: 30),
-                                onPressed: () =>controller.watch()),
-                             CustomText(
-                                text: controller.detales.voteAverage!.toStringAsFixed(1), color: lightColor, size: 26)
-                          ]),
-                    ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                              splashRadius: 15,
+                              icon: const Icon(Icons.add,
+                                  color: whiteColor, size: 30),
+                              onPressed: () => controller.watch()),
+                          CustomText(
+                              text: controller.detales.voteAverage!
+                                  .toStringAsFixed(1),
+                              color: lightColor,
+                              size: 26)
+                        ]),
                   ),
-                  SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10,vertical:10),
-                      child: Row(
+                ),
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
+                    child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               Get.back();
                             },
-                            child: const Icon(Icons.arrow_back,color: whiteColor, size: 30),
+                            child: const Icon(Icons.arrow_back,
+                                color: whiteColor, size: 30),
                           ),
-                          Obx(()=>
-                             GestureDetector(
-                                onTap: ()=>controller.sendObject(),
-                              child: controller.flip.value==0? const Icon(Icons.favorite_outline,color: whiteColor, size: 30):
-                               const Icon(Icons.favorite,color: lightColor, size: 30),
+                          Obx(
+                            () => GestureDetector(
+                              onTap: () => controller.sendObject(),
+                              child: controller.flip.value == 0
+                                  ? const Icon(Icons.favorite_outline,
+                                      color: whiteColor, size: 30)
+                                  : const Icon(Icons.favorite,
+                                      color: lightColor, size: 30),
                             ),
                           )
-                        ]
-                      ),
-                    ),
-                  )
-                ]),
-              ),
-               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal:6),
-                child: CustomText(
-                    text: controller.detales.title.toString(),
-                    color: whiteColor,
-                    size: 22,
-                    //flow: TextOverflow.ellipsis,
-                    maxline: 2,
-                    weight: FontWeight.w500),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(
-                    height: size.height * 0.05,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount:controller.detales.genres!=null? controller.detales.genres!.length:3,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return  CustomText(
-                            text: controller.detales.genres==null?
-                             'Genre':controller.detales.genres![index].name, color: lightColor, size: 16);
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const CustomText(
-                            text: ' | ', color: lightColor, size: 16);
-                      },
-                    )),
-              ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 12),
-                    child: Container(
-                      child:Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: (size.width-32) * 0.2,
-                            child:Column(
-                              children: [
-                                const CustomText(
-                                  text: 'Year',
-                                  color: whiteColor,
-                                  size: 16,
-                                  flow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height:3),
-                                CustomText(
-                                  text:controller.detales.productionCountries==null?'Year': controller.detales.releaseDate!,
-                                  color:lightColor,
-                                  size: 18,
-                                  weight:FontWeight.bold,
-                                  flow: TextOverflow.ellipsis,
-                                )
-                              ]
-                            )
-                          ),
-                          Container(
-                            width: (size.width-32) * 0.6,
-                            child:Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const CustomText(
-                                  text: 'Country',
-                                  color: whiteColor,
-                                  size: 16,
-                                  flow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height:3),
-                                CustomText(
-                                  text:controller.detales.productionCountries==null?'Country':
-                                  controller.detales.originCountry!=''?countries[controller.detales.originCountry]:
-                                  controller.detales.productionCountries![0].name,
-                                  color:lightColor,
-                                  size: 16,
-                                  weight:FontWeight.bold,
-                                  flow: TextOverflow.ellipsis,
-                                )
-                              ]
-                            )
-                          ),
-                          Container(
-                            width: (size.width-32) * 0.2,
-                            child:Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomText(
-                                  text: controller.detales.isShow==false? 'Length':'Seasons',
-                                  color: whiteColor,
-                                  size: 16,
-                                  flow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height:3),
-                                CustomText(
-                                  text: controller.detales.runtime.toString(),
-                                  color:lightColor,
-                                  size: 18,
-                                  weight:FontWeight.bold,
-                  
-                                )
-                              ]
-                            )
-                          )
-                        ]
-                      )
-                    ),
+                        ]),
                   ),
-                  controller.detales.overview==''?
-                  Container():
-                  Padding(
+                )
+              ]),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 6),
+              child: CustomText(
+                  text: controller.detales.title.toString(),
+                  color: whiteColor,
+                  size: 22,
+                  maxline: 2,
+                  weight: FontWeight.w500),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Container(
+                  height: size.height * 0.05,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: controller.detales.genres != null
+                        ? controller.detales.genres!.length
+                        : 3,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return CustomText(
+                          text: controller.detales.genres == null
+                              ? 'Genre'
+                              : controller.detales.genres![index].name,
+                          color: lightColor,
+                          size: 16);
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const CustomText(
+                          text: ' | ', color: lightColor, size: 16);
+                    },
+                  )),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
+              child: Container(
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                    Container(
+                        width: (size.width - 32) * 0.2,
+                        child: Column(children: [
+                          CustomText(
+                            text: 'Year'.tr,
+                            color: whiteColor,
+                            size: 16,
+                            flow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 3),
+                          CustomText(
+                            text: controller.detales.productionCountries == null
+                                ? 'Year'.tr
+                                : controller.detales.releaseDate!,
+                            color: lightColor,
+                            size: 18,
+                            weight: FontWeight.bold,
+                            flow: TextOverflow.ellipsis,
+                          )
+                        ])),
+                    Container(
+                        width: (size.width - 32) * 0.6,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomText(
+                                text: 'country'.tr,
+                                color: whiteColor,
+                                size: 16,
+                                flow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 3),
+                              CustomText(
+                                text: controller.detales.productionCountries ==
+                                        null
+                                    ? 'country'.tr
+                                    : controller.detales.originCountry != ''
+                                        ? countries[
+                                            controller.detales.originCountry]
+                                        : controller.detales
+                                            .productionCountries![0].name,
+                                color: lightColor,
+                                size: 16,
+                                weight: FontWeight.bold,
+                                flow: TextOverflow.ellipsis,
+                              )
+                            ])),
+                    Container(
+                        width: (size.width - 32) * 0.2,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomText(
+                                text: controller.detales.isShow == false
+                                    ? 'length'.tr
+                                    : 'seasons'.tr,
+                                color: whiteColor,
+                                size: 16,
+                                flow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 3),
+                              CustomText(
+                                text: controller.detales.runtime.toString(),
+                                color: lightColor,
+                                size: 18,
+                                weight: FontWeight.bold,
+                              )
+                            ]))
+                  ])),
+            ),
+            controller.detales.overview == ''
+                ? Container()
+                : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: Container(
                       height: size.height * 0.12,
                       child: SingleChildScrollView(
-                        child:CustomText(
-                          text:controller.detales.overview,
-                          size:15,
-                          color:whiteColor,
-                        )
-                      ),
+                          child: CustomText(
+                        text: controller.detales.overview,
+                        size: 15,
+                        color: whiteColor,
+                      )),
                     ),
                   ),
-                  controller.detales.cast!.cast!.isEmpty?
-                  Container():
-                  Container(
+            controller.detales.cast!.cast!.isEmpty
+                ? Container()
+                : Container(
                     child: ContentScroll(
-                      isCast: true,
-                      isArrow:false,
-                      title: 'Cast',
-                      detale: controller.detales
-                    ),
+                        isCast: true,
+                        isArrow: false,
+                        title: 'cast'.tr,
+                        detale: controller.detales),
                   ),
-                  controller.detales.recomendation!.results!.isEmpty?
-                  Container():
-                  Padding(
-                    padding: const EdgeInsets.only(bottom:12.0),
+            controller.detales.recomendation!.results!.isEmpty
+                ? Container()
+                : Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
                     child: Container(
                       child: ContentScroll(
-                        isCast: false,
-                        isArrow:false,
-                        title: 'Recommendations',
-                        detale: controller.detales
-                      ),
-                    ), 
+                          isCast: false,
+                          isArrow: false,
+                          title: 'recommendations'.tr,
+                          detale: controller.detales),
+                    ),
                   )
-            ]),
-          ),
-        
+          ]),
+        ),
       ),
     );
   }

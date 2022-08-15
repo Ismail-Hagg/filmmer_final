@@ -81,7 +81,7 @@ class SignUpScreen extends StatelessWidget {
                             child: Column(
                               children: [
                                 RoundedInputField(
-                                  hint: 'name',
+                                  hint: 'name'.tr,
                                   icon: Icons.person,
                                   isPass: false,
                                   sav: (value) {
@@ -90,7 +90,7 @@ class SignUpScreen extends StatelessWidget {
                                 ),
                                 RoundedInputField(
                                   isEmail: TextInputType.emailAddress,
-                                  hint: 'Email',
+                                  hint: 'email'.tr,
                                   icon: Icons.email,
                                   isPass: false,
                                   sav: (value) {
@@ -98,7 +98,7 @@ class SignUpScreen extends StatelessWidget {
                                   },
                                 ),
                                 RoundedInputField(
-                                  hint: 'Password',
+                                  hint: 'pass'.tr,
                                   icon: Icons.lock,
                                   isPass: false,
                                   sav: (value) {
@@ -107,7 +107,7 @@ class SignUpScreen extends StatelessWidget {
                                 ),
                                 RoundButton(
                                     textColor: lightColor,
-                                    text: 'Register',
+                                    text: 'make'.tr,
                                     press: () {
                                       _key.currentState!.save();
                                       controller.register(context);
@@ -119,8 +119,8 @@ class SignUpScreen extends StatelessWidget {
                           height: ((size.height - topPadding) * 0.8) * 0.19,
                           child: Center(
                             child: UnderParat(
-                              titele: 'Already Have An Account?',
-                              navigatorText: 'Login',
+                              titele: 'already'.tr,
+                              navigatorText: 'Login'.tr,
                               tap: () {
                                 Get.back();
                               },
