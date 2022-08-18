@@ -6,7 +6,6 @@ import 'package:filmmer_final/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controllers/home_controller.dart';
 
 class CircleContainer extends StatelessWidget {
   final double? height;
@@ -70,8 +69,6 @@ class CircleContainer extends StatelessWidget {
               const AssetImage('assets/images/placeholder.jpg')as ImageProvider:
               link!=''? link[0]=='a'?
               AssetImage(link.toString()):
-              //  Get.find<HomeController>().picCheck==false?
-              //  const AssetImage('assets/images/placeholder.jpg'):
                FileImage(File(link.toString()))as ImageProvider:
                const AssetImage('assets/images/twitter.png') ,
               fit: fit,
@@ -88,6 +85,7 @@ class CircleContainer extends StatelessWidget {
         textUp!=null? Align(
           alignment: Alignment.center,
           child: CustomText(
+            align: TextAlign.center,
             text: textUp,
             size: sizeUp,
             color: colorUp,
@@ -99,6 +97,7 @@ class CircleContainer extends StatelessWidget {
         textDown!=null? Align(
           alignment: Alignment.center,
           child: CustomText(
+            align: TextAlign.center,
             text: textDown,
             size: sizeDown,
             color: colorDown,

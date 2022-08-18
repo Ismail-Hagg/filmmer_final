@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseSend {
 
@@ -52,21 +49,6 @@ class FirebaseSend {
       'genres': genres.join(","),
     };
   }
-
-  // factory FirebaseSend.fromDocumentSnapshot(DocumentSnapshot documentSnapshot) {
-  //   return FirebaseSend(
-  //     posterPath: documentSnapshot['posterPath'] as String,
-  //     overView: documentSnapshot['overView'] as String,
-  //     voteAverage: documentSnapshot['voteAverage'] as double,
-  //     name: documentSnapshot['name'] as String,
-  //     isShow: documentSnapshot['isShow'] as bool,
-  //     releaseDate: documentSnapshot['releaseDate'] as String,
-  //     id: documentSnapshot['id'] as String,
-  //     time: documentSnapshot['time'] ,
-  //     genres: documentSnapshot['genres'],
-  //   );
-  // }
-
    factory FirebaseSend.fromMap(Map<String, dynamic> map){
   return FirebaseSend(
       posterPath: map['posterPath'] as String,

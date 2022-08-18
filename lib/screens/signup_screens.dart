@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../controllers/auth_cocontroller.dart';
 import '../helper/constants.dart';
 import '../widgets/circle_container.dart';
-import '../widgets/custom_text.dart';
 import '../widgets/rounded_button.dart';
 import '../widgets/rounded_input.dart';
 import '../widgets/under_part.dart';
@@ -25,8 +21,7 @@ class SignUpScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
-              color: Colors.green,
+          child: SizedBox(
               width: size.width,
               height: (size.height - topPadding),
               child: Stack(children: [
@@ -74,7 +69,7 @@ class SignUpScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                           height: ((size.height - topPadding) * 0.8) * 0.5,
                           child: Form(
                             key: _key,
@@ -115,7 +110,7 @@ class SignUpScreen extends StatelessWidget {
                               ],
                             ),
                           )),
-                      Container(
+                      SizedBox(
                           height: ((size.height - topPadding) * 0.8) * 0.19,
                           child: Center(
                             child: UnderParat(

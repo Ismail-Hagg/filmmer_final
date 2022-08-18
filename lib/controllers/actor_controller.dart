@@ -1,14 +1,11 @@
-import 'dart:convert';
 
+import 'package:filmmer_final/helper/constants.dart';
 import 'package:filmmer_final/models/actor_model.dart';
 import 'package:filmmer_final/storage_local/user_data.dart';
 import 'package:get/get.dart';
-
 import '../models/awards_model.dart';
 import '../services/home_screen_service.dart';
 import 'home_controller.dart';
-import 'movie_detale_controller.dart';
-import 'package:http/http.dart' as http;
 
 class ActorController extends GetxController {
   var str = '';
@@ -37,11 +34,13 @@ class ActorController extends GetxController {
     getActorShow();
   }
 
+  // switch between showa and movies for the actor
   flip(int number) {
     count = number;
     update();
   }
 
+  // load actor data from api
   getActor() async {
     UserData().getLan.then((value){
       if (value['lan']!= null) {
@@ -53,7 +52,6 @@ class ActorController extends GetxController {
       _model.age =value.birthday!=null? calculateAge(DateTime.parse(value.birthday.toString()),1):calculateAge(DateTime.parse(value.birthday.toString()),0);
       _model.imdb = value.imdbId;
       getAward(model.imdb.toString(),);
-      //test(model.imdb.toString());
       update();
     });
       } else {
@@ -65,13 +63,13 @@ class ActorController extends GetxController {
       _model.age =value.birthday!=null? calculateAge(DateTime.parse(value.birthday.toString()),1):calculateAge(DateTime.parse(value.birthday.toString()),0);
       _model.imdb = value.imdbId;
       getAward(model.imdb.toString(),);
-      //test(model.imdb.toString());
       update();
     });
       }
     });
   }
 
+  // load actor data from api
   getActorMovie() async {
     FirstPageService()
         .getActorMovies(
@@ -82,6 +80,7 @@ class ActorController extends GetxController {
     });
   }
 
+  // load actor data from api
   getActorShow() async {
     FirstPageService()
         .getActorMovies(
@@ -92,6 +91,7 @@ class ActorController extends GetxController {
     });
   }
 
+  // load actor data from api
   getAward(String id) async {
     await FirstPageService()
         .getAwards(
@@ -125,6 +125,7 @@ class ActorController extends GetxController {
     }
   }
 
+  // formatt actor's awards
   awardCount(AwardModel model) {
     awardMapLate = [];
     if (model.items!.isNotEmpty) {
@@ -145,7 +146,7 @@ class ActorController extends GetxController {
     }
     awardMap = awardMapLate;
     } else {
-      print('someting went wrong');
+      snack('wrong'.tr,'');
     }
     
   }

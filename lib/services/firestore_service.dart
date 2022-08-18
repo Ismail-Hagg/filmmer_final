@@ -1,7 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
-
-import '../helper/constants.dart';
 import '../models/upload.dart';
 import '../models/user_model.dart';
 
@@ -51,51 +48,12 @@ class FireStoreService {
           .collection('${isShow}WatchList')
           .doc(fire.id)
           .set(fire.toMap());
-      // Get.snackbar('Added WatchList In Firebase', '',
-      //     duration: const Duration(seconds: 1),
-      //     backgroundColor: lightColor,
-      //     colorText: whiteColor);
   }
 
-  // Stream<List<FirebaseSend>> getfavourites(String uid) {
-  //   List<FirebaseSend> retVal = [];
-  //   return _ref
-  //       .doc(uid)
-  //       .collection("Favourites")
-  //       .orderBy("time", descending: true)
-  //       .snapshots()
-  //       .map((QuerySnapshot query) {
-  //     retVal.clear();
-  //     query.docs.forEach((element) {
-  //       retVal.add(FirebaseSend.fromDocumentSnapshot(element));
-  //       print(element.data());
-  //     });
-  //     return retVal;
-  //   });
-  // }
 
   Future<void> delete(String uid, String id, String collection) async {
     return _ref.doc(uid).collection(collection).doc(id).delete();
   }
 
-  // Stream<List<FirebaseSend>> getUserMessageStream(
-  //     String userId, String collection) {
-  //   List<FirebaseSend> messages = [];
-  //   Stream<QuerySnapshot> snapshots = _ref
-  //       .doc(userId)
-  //       .collection(collection)
-  //       .orderBy("time", descending: true)
-  //       .snapshots();
-  //   snapshots.listen((QuerySnapshot query) {
-  //     if (query.docChanges.isNotEmpty) {
-  //       messages.clear();
-  //     }
-  //   });
-  //   return snapshots.map((snapshot) {
-  //     snapshot.docs.forEach((messageData) {
-  //       messages.add(FirebaseSend.fromDocumentSnapshot(messageData));
-  //     });
-  //     return messages.toList();
-  //   });
-  // }
+
 }

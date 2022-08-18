@@ -1,4 +1,3 @@
-import 'package:filmmer_final/models/upload.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/favourites_controller.dart';
@@ -21,7 +20,7 @@ class FavoritesScreen extends StatelessWidget {
         backgroundColor: primaryColor,
         // centerTitle: true,
         elevation: 0,
-        title:  CustomText(text: 'favourite'.tr, color: lightColor),
+        title:  CustomText(text: 'favourite'.tr, color: lightColor,size:size.width * 0.04),
         actions: [
           IconButton(
             icon: GetBuilder<FavoritesController>(
@@ -32,7 +31,7 @@ class FavoritesScreen extends StatelessWidget {
                             .length
                             .toString(),
                        
-                    size: size.width*0.05,
+                    size: size.width * 0.04
                   ),
             ),
             onPressed: null,
@@ -74,7 +73,7 @@ class FavoritesScreen extends StatelessWidget {
                     title: CustomText(
                       text: controller.newList[index].name,
                       color: whiteColor,
-                      size: size.width*0.05,
+                      size: size.width * 0.042
                     ), 
                     onTap: () {
                       controller.navv(controller.newList[index]);

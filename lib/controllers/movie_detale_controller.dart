@@ -1,7 +1,6 @@
 import 'package:filmmer_final/controllers/home_controller.dart';
 import 'package:filmmer_final/controllers/watchlist_controller.dart';
 import 'package:filmmer_final/helper/constants.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/actor_model.dart';
 import '../models/movie_detale_model.dart';
@@ -62,125 +61,129 @@ class MovieDetaleController extends GetxController {
 
   //add a movie or a show to favourites
   sendObject() async {
-    List<String> lst = [];
+    if (load != 0) {
+      List<String> lst = [];
 
-    for (var i = 0; i < detales.genres!.length; i++) {
-      lst.add(detales.genres![i].name.toString());
-    }
-
-    FirebaseSend fire = FirebaseSend(
-        posterPath: detales.posterPath.toString(),
-        overView: detales.overview.toString(),
-        voteAverage: detales.voteAverage as double,
-        name: detales.title.toString(),
-        isShow: detales.isShow as bool,
-        releaseDate: detales.releaseDate.toString(),
-        id: detales.id.toString(),
-        time: DateTime.now().toString(),
-        genres: lst);
-    if (flip.value == 0) {
-      if (Get.isRegistered<FavoritesController>() == true) {
-        Get.find<FavoritesController>().fromDetale(fire, true);
+      for (var i = 0; i < detales.genres!.length; i++) {
+        lst.add(detales.genres![i].name.toString());
       }
-      await dbHelper
-          .insert(fire.toMapLocal(), DatabaseHelper.table)
-          .then((value) async {
-        snack('favadd'.tr, '');
-        await FireStoreService().upload(_usermodel.userId, fire, flip.value);
+
+      FirebaseSend fire = FirebaseSend(
+          posterPath: detales.posterPath.toString(),
+          overView: detales.overview.toString(),
+          voteAverage: detales.voteAverage as double,
+          name: detales.title.toString(),
+          isShow: detales.isShow as bool,
+          releaseDate: detales.releaseDate.toString(),
+          id: detales.id.toString(),
+          time: DateTime.now().toString(),
+          genres: lst);
+      if (flip.value == 0) {
         flip.value = 1;
-        update();
-      });
-    } else {
-      if (Get.isRegistered<FavoritesController>() == true) {
-        Get.find<FavoritesController>().fromDetale(fire, false);
-      }
-      await dbHelper.delete(DatabaseHelper.table, fire.id).then((value) async {
-        snack('favalready'.tr, '');
-        await FireStoreService().upload(_usermodel.userId, fire, flip.value);
+        if (Get.isRegistered<FavoritesController>() == true) {
+          Get.find<FavoritesController>().fromDetale(fire, true);
+        }
+        await dbHelper
+            .insert(fire.toMapLocal(), DatabaseHelper.table)
+            .then((value) async {
+          snack('favadd'.tr, '');
+          await FireStoreService().upload(_usermodel.userId, fire, 0);
+          update();
+        });
+      } else {
         flip.value = 0;
-        update();
-      });
+        if (Get.isRegistered<FavoritesController>() == true) {
+          Get.find<FavoritesController>().fromDetale(fire, false);
+        }
+        await dbHelper
+            .delete(DatabaseHelper.table, fire.id)
+            .then((value) async {
+          snack('favalready'.tr, '');
+          await FireStoreService().upload(_usermodel.userId, fire, 1);
+          update();
+        });
+      }
     }
   }
 
   //add movie or show to watchlist
   watch() async {
-    String table = detales.isShow != true
-        ? DatabaseHelper.movieTable
-        : DatabaseHelper.showTable;
-    await dbHelper
-        .querySelect(table, detales.id.toString())
-        .then((value) async {
-      if (value.isEmpty) {
-        List<String> lst = [];
-        String show = '';
-        for (var i = 0; i < detales.genres!.length; i++) {
-          lst.add(detales.genres![i].name.toString());
-        }
-        FirebaseSend fire = FirebaseSend(
-            posterPath: detales.posterPath.toString(),
-            overView: detales.overview.toString(),
-            voteAverage: detales.voteAverage as double,
-            name: detales.title.toString(),
-            isShow: detales.isShow as bool,
-            releaseDate: detales.releaseDate.toString(),
-            id: detales.id.toString(),
-            time: DateTime.now().toString(),
-            genres: lst);
-        fire.isShow == true ? show = 'show' : show = 'movie';
-
-        await dbHelper.insert(fire.toMapLocal(), table).then((value) async {
-          if (Get.isRegistered<WatchListController>() == true) {
-            Get.find<WatchListController>().fromDetale(fire, fire.isShow);
+    if (load != 0) {
+      String table = detales.isShow != true
+          ? DatabaseHelper.movieTable
+          : DatabaseHelper.showTable;
+      await dbHelper
+          .querySelect(table, detales.id.toString())
+          .then((value) async {
+        if (value.isEmpty) {
+          List<String> lst = [];
+          String show = '';
+          for (var i = 0; i < detales.genres!.length; i++) {
+            lst.add(detales.genres![i].name.toString());
           }
-          snack('watchadd'.tr, '');
+          FirebaseSend fire = FirebaseSend(
+              posterPath: detales.posterPath.toString(),
+              overView: detales.overview.toString(),
+              voteAverage: detales.voteAverage as double,
+              name: detales.title.toString(),
+              isShow: detales.isShow as bool,
+              releaseDate: detales.releaseDate.toString(),
+              id: detales.id.toString(),
+              time: DateTime.now().toString(),
+              genres: lst);
+          fire.isShow == true ? show = 'show' : show = 'movie';
 
-          await FireStoreService().watchList(_usermodel.userId, fire, show);
-        });
-      } else {
-        snack('watchalready'.tr, '');
-      }
-    });
+          await dbHelper.insert(fire.toMapLocal(), table).then((value) async {
+            if (Get.isRegistered<WatchListController>() == true) {
+              Get.find<WatchListController>().fromDetale(fire, fire.isShow);
+            }
+            snack('watchadd'.tr, '');
+
+            await FireStoreService().watchList(_usermodel.userId, fire, show);
+          });
+        } else {
+          snack('watchalready'.tr, '');
+        }
+      });
+    }
   }
 
   //fetch movie or show detales from api
   loadDetales(MovieDetaleModel res) async {
     UserData().getLan.then((value) async {
-      
-        load = 0;
-    var show = res.isShow == true ? 'tv' : 'movie';
-    try {
-      await FirstPageService()
-          .getFromImdb(
-        'https://api.themoviedb.org/3/$show/${res.id}?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}',
-      )
-          .then((value) async {
-        _detales = value;
-      });
-      await FirstPageService()
-          .getCast(
-              'https://api.themoviedb.org/3/$show/${res.id}/credits?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}')
-          .then((value) => {_detales.cast = value});
+      load = 0;
+      var show = res.isShow == true ? 'tv' : 'movie';
+      try {
+        await FirstPageService()
+            .getFromImdb(
+          'https://api.themoviedb.org/3/$show/${res.id}?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}',
+        )
+            .then((value) async {
+          _detales = value;
+        });
+        await FirstPageService()
+            .getCast(
+                'https://api.themoviedb.org/3/$show/${res.id}/credits?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}')
+            .then((value) => {_detales.cast = value});
 
-      await FirstPageService()
-          .getRecomended(
-              'https://api.themoviedb.org/3/$show/${res.id}/recommendations?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}')
-          .then((value) {
-        _detales.recomendation = value;
-      });
-      await FirstPageService()
-          .getTrailer(
-              'https://api.themoviedb.org/3/$show/${res.id}/videos?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}')
-          .then((value) {
-        _trailer = value;
-      });
-    } catch (e) {
-      snack('Error', e.toString());
-    }
+        await FirstPageService()
+            .getRecomended(
+                'https://api.themoviedb.org/3/$show/${res.id}/recommendations?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}')
+            .then((value) {
+          _detales.recomendation = value;
+        });
+        await FirstPageService()
+            .getTrailer(
+                'https://api.themoviedb.org/3/$show/${res.id}/videos?api_key=e11cff04b1fcf50079f6918e5199d691&language=${value['lan']}-${value['country']}')
+            .then((value) {
+          _trailer = value;
+        });
+      } catch (e) {
+        snack('Error', e.toString());
+      }
 
-    load = 1;
-    update();
-      
+      load = 1;
+      update();
     });
   }
 

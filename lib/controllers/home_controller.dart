@@ -1,12 +1,6 @@
-//import 'dart:html';
-
 import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:filmmer_final/models/more_search_moving.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../helper/constants.dart';
 import '../models/actor_model.dart';
@@ -16,18 +10,15 @@ import '../models/movie_result_model.dart';
 import '../models/recomended_model.dart';
 import '../models/result_model.dart';
 import '../models/trailer_model.dart';
-import '../models/upload.dart';
 import '../screens/actor_screen.dart';
 import '../screens/more_search_screen.dart';
 import '../screens/movie_detale_screen.dart';
-import '../screens/test_screen.dart';
 import '../services/home_screen_service.dart';
 import '../storage_local/local_database.dart';
 import '../storage_local/user_data.dart';
 import 'actor_controller.dart';
 import 'connectivity_controller.dart';
 import 'movie_detale_controller.dart';
-import 'dart:io' as io;
 
 class HomeController extends GetxController {
   ActorModel _actor = ActorModel();
@@ -79,19 +70,14 @@ class HomeController extends GetxController {
     'assets/images/placeholder.jpg'
   ]));
   Rx<HomeTopMovies> get topRatedShows => _topRatedShows;
-
   final Rx<MovieDetaleModel> _movied = Rx(MovieDetaleModel());
   Rx<MovieDetaleModel> get movied => _movied;
-
   final TrailerModel _trailer = TrailerModel();
   TrailerModel get trailer => _trailer;
-
   var count = 0.obs;
   var build = false.obs;
   var track = 0;
-
   bool picCheck = true;
-
   Rx<ConnectivityResult> internet = Get.find<ConnectivityController>().connect;
   @override
   void onInit() async {
@@ -102,17 +88,15 @@ class HomeController extends GetxController {
     ever(internet, (val) => check());
   }
 
+  //check if the profile picture exists locally
   Future<void> existPic() async {
     await UserData().getUser.then((value) {
-      print(value.pic);
-      print(value.isLocal);
       File(value.pic).exists().then((value) => chain(value));
     });
   }
 
   chain(bool val) {
     picCheck = val;
-    print(picCheck);
   }
 
   check() async {
@@ -120,12 +104,6 @@ class HomeController extends GetxController {
       _coming.value.results!.clear();
     }
     load();
-    // if (internet.value != ConnectivityResult.none) {
-    //   load();
-    //   build.value = true;
-    // } else {
-    //   build.value = false;
-    // }
   }
 
 
@@ -267,7 +245,7 @@ class HomeController extends GetxController {
       Get.to(() => MovieDetale(tag: res.title.toString()),
           preventDuplicates: false);
     } else {
-      snack('Error', 'No Internet connection');
+      snack('error'.tr, 'internet'.tr);
     }
   }
 
@@ -278,14 +256,14 @@ class HomeController extends GetxController {
       move = Move(isSearch: isSearch, link: link, title: title);
       Get.to(() => MoreSearchScreen());
     } else {
-      snack('Error', 'No Internet connection');
+      snack('error'.tr, 'internet'.tr);
     }
   }
 
   //navigate to actor page
   goToActor(String? name, String? pic, int? age, String? id, String? bio,
       List<Results>? movies, List<Results>? shows) {
-    if (Get.find<ConnectivityController>().connect != ConnectivityResult.none) {
+    if (Get.find<ConnectivityController>().connect.value != ConnectivityResult.none) {
       _actor = ActorModel(
         name: name,
         pic: pic,
@@ -298,7 +276,7 @@ class HomeController extends GetxController {
       Get.create(() => (ActorController()), permanent: false);
       Get.to(() => ActorScreen(), preventDuplicates: false);
     } else {
-      snack('Error', 'No Internet connection');
+      snack('error'.tr, 'internet'.tr);
     }
   }
 }

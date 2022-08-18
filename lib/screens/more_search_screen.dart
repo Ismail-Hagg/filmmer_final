@@ -10,12 +10,11 @@ import '../widgets/movie_widget.dart';
 class MoreSearchScreen extends StatelessWidget {
   MoreSearchScreen({Key? key}) : super(key: key);
 
-  MoreSearchController controller = Get.put(MoreSearchController());
+  final MoreSearchController controller = Get.put(MoreSearchController());
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    double height = AppBar().preferredSize.height;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: primaryColor,
@@ -27,9 +26,9 @@ class MoreSearchScreen extends StatelessWidget {
                   backgroundColor: primaryColor,
                   centerTitle: true,
                   title: CustomText(
-                    text: controller.move.title,
-                    color: lightColor,
-                  )),
+                      text: controller.move.title,
+                      color: lightColor,
+                      size: size.width * 0.045)),
             )
           : PreferredSize(
               preferredSize: Size.fromHeight(size.height * 0.075),
@@ -40,7 +39,7 @@ class MoreSearchScreen extends StatelessWidget {
                     cursorColor: lightColor,
                     autofocus: true,
                     style: const TextStyle(color: lightColor),
-                    decoration:  InputDecoration(
+                    decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'search'.tr,
                       hintStyle: const TextStyle(
@@ -62,7 +61,7 @@ class MoreSearchScreen extends StatelessWidget {
               ? Column(children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Container(
+                    child: SizedBox(
                       height: size.height * 0.17 - size.height * 0.077,
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -99,46 +98,46 @@ class MoreSearchScreen extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: Container(
-                      child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          child: Wrap(
-                              direction: Axis.horizontal,
-                              spacing: 2,
-                              runSpacing: 2,
-                              children: List.generate(
-                                  controll.model.results!.length, (index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    if (controll.model.results![index].mediaType=='person') {
-                                      
-                                    } else {
-                                      Get.find<HomeController>().navigatoToDetale(
+                    child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Wrap(
+                            direction: Axis.horizontal,
+                            spacing: 2,
+                            runSpacing: 2,
+                            children: List.generate(
+                                controll.model.results!.length, (index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  if (controll
+                                          .model.results![index].mediaType ==
+                                      'person') {
+                                  } else {
+                                    Get.find<HomeController>().navigatoToDetale(
                                         controll.model.results![index]);
-                                    }
-                                    //print(controll.model.results![index].mediaType);
-                                    // Get.find<HomeController>().navigatoToDetale(
-                                    //     controll.model.results![index]);
-                                  },
-                                  child: MovieWidget(
-                                    width: size.width * 0.32,
-                                    height: size.height * 0.25,
-                                    link: controll.model.results![index]
-                                                .posterPath ==
-                                            null
-                                        ? 'https://www.kuleuven.be/communicatie/congresbureau/fotos-en-afbeeldingen/no-image.png/image'
-                                        : imagebase +
-                                            controll
-                                                .model.results![index].posterPath
-                                                .toString(),
-                                    color: lightColor,
-                                  ),
-                                );
-                              }))),
-                    ),
+                                  }
+                                },
+                                child: MovieWidget(
+                                  width: size.width * 0.32,
+                                  height: size.height * 0.25,
+                                  link: controll.model.results![index]
+                                              .posterPath ==
+                                          null
+                                      ? 'https://www.kuleuven.be/communicatie/congresbureau/fotos-en-afbeeldingen/no-image.png/image'
+                                      : imagebase +
+                                          controll
+                                              .model.results![index].posterPath
+                                              .toString(),
+                                  color: lightColor,
+                                ),
+                              );
+                            }))),
                   ),
                 ])
-              : controller.indicator==1? const Center(child: CircularProgressIndicator(color: lightColor),):Container()),
+              : controller.indicator == 1
+                  ? const Center(
+                      child: CircularProgressIndicator(color: lightColor),
+                    )
+                  : Container()),
     );
   }
 }

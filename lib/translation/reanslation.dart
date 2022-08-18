@@ -47,12 +47,18 @@ class LocaleString extends Translations {
           'already':'Already Have An Account ?',
           'Login':'Login',
           'name':'Name',
-          'otherSocial':'Unsupprted For Now',
+          'otherSocial':'Unsupported For Now',
           'age':'Age',
           'nobio':'No Biography Available',
           'bio':'Biography',
-          'years':'Years Old'
-          
+          'years':'Years Old',
+          'res':'No Results',
+          'error':'Error',
+          'moreres':'No More Results',
+          'nopage':'No More Pages',
+          'wrong':'Something Went Wrong',
+          'abort':'Canceled',
+          'connect':'Connection Problem'
         },
         'ar_SA': {
           'Year': 'السنه',
@@ -91,7 +97,7 @@ class LocaleString extends Translations {
           'make':'سجل',
           'emailuse':'او استخدم بريدك الالكتروني',
           'email':'البريد الالكتروني',
-          'pass':'كبمة المرور',
+          'pass':'كلمة المرور',
           'login':'تسجيل الدخول',
           'already':'لديك حساب ؟',
           'Login':'تسجيل الدخول',
@@ -100,7 +106,14 @@ class LocaleString extends Translations {
           'age':'العمر',
           'nobio':'لاتوجد سيرة ذاتيه',
           'bio':'السيرة الذاتيه',
-          'years':'سنه'
+          'years':'سنه',
+          'res':'لا توجد نتائج',
+          'error':'هناك خلل',
+          'moreres':'لايوجد مزيد من النتائج',
+          'nopage':'لايوجد المزيد من الصفحات',
+          'wrong':'هناك خلل',
+          'abort':'الغيت العمليه',
+          'connect':'مشكله في الاتصال'
         }
       };
 }

@@ -37,13 +37,13 @@ class Filmmer extends StatelessWidget {
     return GetMaterialApp(
       translations: LocaleString(),
       locale:  Locale(map['lan'].toString(), map['country'].toString()),
-      fallbackLocale: Get.deviceLocale,
+      fallbackLocale: const Locale('en','US'),
       title: 'Filmmer',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ControllScreen(),
+      home: const ControllScreen(),
     );
   }
 }

@@ -1,14 +1,10 @@
-import 'package:filmmer_final/controllers/connectivity_controller.dart';
 import 'package:filmmer_final/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/auth_cocontroller.dart';
 import '../controllers/home_controller.dart';
-import '../models/more_search_moving.dart';
 import '../widgets/content_scroll.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/drawer.dart';
-import 'more_search_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -35,66 +31,61 @@ class HomeScreen extends StatelessWidget {
               icon: const Icon(Icons.search),
               splashRadius: 15,
               onPressed: () {
-                Get.find<HomeController>().goToSearch(true,'link','Search');
+                Get.find<HomeController>().goToSearch(true, 'link', 'Search');
               },
             )
           ],
         ),
         body: MixinBuilder<HomeController>(
-            init: Get.find<HomeController>(),
-            builder: (builder) =>  builder.coming.value.results!.isNotEmpty
-                      ? ListView(
-                          physics: const BouncingScrollPhysics(),
-                          children: [
-                              ContentScroll(
-                                title: 'upcoming'.tr,
-                                isArrow: true, 
-                                isCast: false,
-                                movie: controller.coming,
-                                link: upcoming,
-                              ),
-                              ContentScroll(
-                                  title: 'popularMovies'.tr,
-                                  isArrow: true,
-                                  isCast: false,
-                                  movie: controller.popularMovies,
-                                  link: pop),
-                              ContentScroll(
-                                  title: 'popularShows'.tr,
-                                  isArrow: true,
-                                  isCast: false,
-                                  movie: controller.popularShows,
-                                  link: popularTv),
-                              ContentScroll(
-                                  title: 'topMovies'.tr,
-                                  isArrow: true,
-                                  isCast: false,
-                                  movie: controller.topRatedMovies,
-                                  link: top),
-                              ContentScroll(
-                                  title: 'topShowa'.tr,
-                                  isArrow: true,
-                                  isCast: false,
-                                  movie: controller.topRatedShows,
-                                  link: topTv),
-                              const SizedBox(
-                                height: 12,
-                              )
-                            ])
-                      : builder.build.value == true
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                              color: lightColor,
-                            ))
-                          : Center( 
-                              child: CustomText( 
-                                text: 'internet'.tr,
-                                color: whiteColor, 
-                                size: size.width * 0.055,
-                              )), 
-                )
-
-        // body:Obx(()=>Center(child: CustomText(text: controller.internet.toString(),color: whiteColor),))
-                );
+          init: Get.find<HomeController>(),
+          builder: (builder) => builder.coming.value.results!.isNotEmpty
+              ? ListView(physics: const BouncingScrollPhysics(), children: [
+                  ContentScroll(
+                    title: 'upcoming'.tr,
+                    isArrow: true,
+                    isCast: false,
+                    movie: controller.coming,
+                    link: upcoming,
+                  ),
+                  ContentScroll(
+                      title: 'popularMovies'.tr,
+                      isArrow: true,
+                      isCast: false,
+                      movie: controller.popularMovies,
+                      link: pop),
+                  ContentScroll(
+                      title: 'popularShows'.tr,
+                      isArrow: true,
+                      isCast: false,
+                      movie: controller.popularShows,
+                      link: popularTv),
+                  ContentScroll(
+                      title: 'topMovies'.tr,
+                      isArrow: true,
+                      isCast: false,
+                      movie: controller.topRatedMovies,
+                      link: top),
+                  ContentScroll(
+                      title: 'topShowa'.tr,
+                      isArrow: true,
+                      isCast: false,
+                      movie: controller.topRatedShows,
+                      link: topTv),
+                  const SizedBox(
+                    height: 12,
+                  )
+                ])
+              : builder.build.value == true
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                      color: lightColor,
+                    ))
+                  : Center(
+                      child: CustomText(
+                      text: 'internet'.tr,
+                      color: whiteColor,
+                      size: size.width * 0.055,
+                    )),
+        ));
   }
-} 
+}

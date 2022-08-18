@@ -15,9 +15,9 @@ class CastModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.cast != null) {
-      data['cast'] = this.cast!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data =  <String, dynamic>{};
+    if (cast != null) {
+      data['cast'] = cast!.map((v) => v.toJson()).toList();
     }
 
     return data;
@@ -48,12 +48,12 @@ class Cast {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['profile_path'] = this.profilePath;
-    data['character'] = this.character;
-    data['credit_id'] = this.creditId;
+    final Map<String, dynamic> data =  <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['profile_path'] = profilePath;
+    data['character'] = character;
+    data['credit_id'] = creditId;
     return data;
   }
 }

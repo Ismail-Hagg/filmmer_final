@@ -2,7 +2,7 @@
     package="com.example.filmmer_final">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="filmmer_final"
+        android:label="Filmmer"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

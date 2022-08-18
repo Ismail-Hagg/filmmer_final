@@ -21,7 +21,6 @@ class UserData{
       Map<String,String> map = await  _getLan();
       return map;
     }catch(e){
-     // print('error : ${e.toString()}');
       return {};  
     }
   }
@@ -63,6 +62,5 @@ class UserData{
   Future<void> deleteUser()async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.clear();
-    print('all deleted');
   }
 }

@@ -19,6 +19,11 @@ class TrailerController extends GetxController {
     controller = PodPlayerController(
       playVideoFrom: PlayVideoFrom.youtube(
           'https://www.youtube.com/watch?v=$vid'),
+          podPlayerConfig: const PodPlayerConfig(
+            initialVideoQuality: 720,
+            forcedVideoFocus: true
+
+          )
     )..initialise();
     super.onInit();
   }

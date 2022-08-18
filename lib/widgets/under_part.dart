@@ -10,15 +10,16 @@ class UnderParat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           titele,
-          style: const TextStyle(
+          style:  TextStyle(
               color: primaryColor,
               fontFamily: 'OpenSans',
-              fontSize: 16,
+              fontSize: size.width * 0.035,
               fontWeight: FontWeight.w600),
         ),
         const SizedBox(width:10),
@@ -26,10 +27,10 @@ class UnderParat extends StatelessWidget {
           onTap: tap,
           child: Text(
             navigatorText,
-            style:const TextStyle(
+            style: TextStyle(
                 color: lightColor,
                 fontFamily: 'OpenSans',
-                fontSize: 16,
+                fontSize: size.width * 0.035,
                 fontWeight: FontWeight.w600)
           ),
         )

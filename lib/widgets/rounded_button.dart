@@ -34,11 +34,11 @@ class RoundButton extends StatelessWidget {
                 fontFamily: 'OpenSans',
               )),
           child: Obx(
-            () => Get.find<AuthController>().count == 1
+            () => Get.find<AuthController>().count.value == 1
                 ? const CircularProgressIndicator(
                     color: lightColor,
                   )
-                : CustomText(text: text, color: textColor, size: 17),
+                : CustomText(text: text, color: textColor, size: size.width * 0.045,),
           ),
         ),
       ),

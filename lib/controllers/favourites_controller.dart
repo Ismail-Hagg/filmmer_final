@@ -1,10 +1,8 @@
 import 'dart:math';
-
 import 'package:filmmer_final/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:search_page/search_page.dart';
-
 import '../helper/constants.dart';
 import '../models/result_model.dart';
 import '../models/upload.dart';
@@ -42,6 +40,7 @@ class FavoritesController extends GetxController {
     });
   }
 
+  //delete from firestore
   delete(String id, String collection) async {
     FireStoreService().delete(_usermodel.userId, id, collection);
   }
@@ -59,6 +58,7 @@ class FavoritesController extends GetxController {
     update();
   }
 
+  //go to deteale page of a random movie or a show in the favourites list
   randomnav() {
     if (newList.isEmpty) {
       snack('No Entries', '');

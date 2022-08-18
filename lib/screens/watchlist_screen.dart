@@ -20,6 +20,7 @@ class WatchList extends StatelessWidget {
           backgroundColor: primaryColor,
           elevation: 0,
           title:  CustomText(
+            size: size.width*0.045,
             text: 'watchList'.tr,
             color: lightColor,
           ),
@@ -37,7 +38,7 @@ class WatchList extends StatelessWidget {
                           .showLocal
                           .length
                           .toString(),
-                  size: 18,
+                  size: size.width*0.035,
                 ),
                 onPressed: null,
               ),
@@ -46,7 +47,6 @@ class WatchList extends StatelessWidget {
               icon: const Icon(Icons.search),
               splashRadius: 15,
               onPressed: () {
-                //Get.to(()=>SearchSaved());
                 Get.find<WatchListController>().search(context);
               },
             ),
@@ -71,7 +71,7 @@ class WatchList extends StatelessWidget {
                         onTap: () {
                           controller.change(0);
                         },
-                        child: Container(
+                        child: SizedBox(
                           width: size.width * 0.5,
                           height: size.height * 0.065,
                           child: Center(
@@ -80,7 +80,7 @@ class WatchList extends StatelessWidget {
                               color: controller.tabs.value == 0
                                   ? Colors.white
                                   : Colors.white.withOpacity(0.3),
-                              size: 18,
+                              size: size.width*0.04,
                             ),
                           ),
                         ),
@@ -100,7 +100,7 @@ class WatchList extends StatelessWidget {
                         onTap: () {
                           controller.change(1);
                         },
-                        child: Container(
+                        child: SizedBox(
                           width: size.width * 0.5,
                           height: size.height * 0.065,
                           child: Center(
@@ -109,7 +109,7 @@ class WatchList extends StatelessWidget {
                               color: controller.tabs.value == 1
                                   ? Colors.white
                                   : Colors.white.withOpacity(0.3),
-                              size: 18,
+                              size: size.width*0.04,
                             ),
                           ),
                         ),
@@ -141,7 +141,7 @@ class WatchList extends StatelessWidget {
                                 ? controller.moviesLocal[index].name
                                 : controller.showLocal[index].name,
                             color: Colors.white,
-                            size: size.width * 0.05),
+                            size: size.width * 0.042),
                                          trailing: IconButton(
                               icon: const Icon(Icons.delete, color: Colors.white),
                               splashRadius: 15,

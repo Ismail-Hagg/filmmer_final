@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:filmmer_final/screens/controll_screen.dart';
@@ -10,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../helper/constants.dart';
 import '../models/upload.dart';
 import '../models/user_model.dart';
@@ -24,7 +21,7 @@ class AuthController extends GetxController {
   final Rxn<User> _user = Rxn<User>();
   User? get user => _user.value;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   var count = 0.obs;
   var obscure = true.obs;
@@ -50,7 +47,7 @@ class AuthController extends GetxController {
     try {
       final dynamic googleUser = await _googleSignIn.signIn() ?? '';
       if (googleUser == '') {
-        snack('Aborted', '');
+        snack('abort'.tr,'');
 
         count.value = 0;
       } else {
@@ -155,12 +152,10 @@ class AuthController extends GetxController {
         allowedExtensions: ['png', 'jpg']);
 
     if (result == null) {
-      print('nothing man');
+      snack('abort'.tr,'');
     } else {
       path = result.files.single.path;
       _image = File(path.toString());
-
-      print('path is here $path');
       update();
     }
   }
@@ -193,6 +188,8 @@ class AuthController extends GetxController {
     setUser(model);
   }
 
+
+  //load favourites and watchlist from firestore for user
   Future getDocs(String userId) async {
     List<FirebaseSend> send = [];
     QuerySnapshot fav = await FirebaseFirestore.instance

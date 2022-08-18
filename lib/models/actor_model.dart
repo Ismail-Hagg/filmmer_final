@@ -48,13 +48,13 @@ class Actor {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['biography'] = this.biography;
-    data['birthday'] = this.birthday;
-    data['id'] = this.id;
-    data['imdb_id'] = this.imdbId;
-    data['name'] = this.name;
-    data['profile_path'] = this.profilePath;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['biography'] = biography;
+    data['birthday'] = birthday;
+    data['id'] = id;
+    data['imdb_id'] = imdbId;
+    data['name'] = name;
+    data['profile_path'] = profilePath;
     return data;
   }
 }

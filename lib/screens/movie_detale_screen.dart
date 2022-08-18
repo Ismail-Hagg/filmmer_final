@@ -1,9 +1,6 @@
-import 'package:filmmer_final/screens/trailer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shape_of_view_null_safe/shape_of_view_null_safe.dart';
-
-import '../controllers/home_controller.dart';
 import '../controllers/movie_detale_controller.dart';
 import '../helper/constants.dart';
 import '../helper/countries.dart';
@@ -12,7 +9,7 @@ import '../widgets/custom_text.dart';
 
 class MovieDetale extends StatelessWidget {
   final String tag;
-  MovieDetale({Key? key, required this.tag}) : super(key: key);
+  const MovieDetale({Key? key, required this.tag}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +20,10 @@ class MovieDetale extends StatelessWidget {
         child: GetBuilder<MovieDetaleController>(
           init: Get.find<MovieDetaleController>(),
           builder: (controller) => Column(children: [
-            Container(
+            SizedBox(
               height: size.height * 0.44,
               child: Stack(children: [
-                Container(
+                SizedBox(
                   height: size.height * 0.4,
                   child: ShapeOfView(
                       elevation: 25,
@@ -81,7 +78,7 @@ class MovieDetale extends StatelessWidget {
                               text: controller.detales.voteAverage!
                                   .toStringAsFixed(1),
                               color: lightColor,
-                              size: 26)
+                              size: size.width * 0.05,)
                         ]),
                   ),
                 ),
@@ -120,13 +117,13 @@ class MovieDetale extends StatelessWidget {
               child: CustomText(
                   text: controller.detales.title.toString(),
                   color: whiteColor,
-                  size: 22,
+                  size: size.width * 0.055,
                   maxline: 2,
                   weight: FontWeight.w500),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Container(
+              child: SizedBox(
                   height: size.height * 0.05,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
@@ -140,7 +137,7 @@ class MovieDetale extends StatelessWidget {
                               ? 'Genre'
                               : controller.detales.genres![index].name,
                           color: lightColor,
-                          size: 16);
+                          size: size.width * 0.04);
                     },
                     separatorBuilder: (BuildContext context, int index) {
                       return const CustomText(
@@ -151,114 +148,110 @@ class MovieDetale extends StatelessWidget {
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
-              child: Container(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                    Container(
-                        width: (size.width - 32) * 0.2,
-                        child: Column(children: [
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                SizedBox(
+                    width: (size.width - 32) * 0.2,
+                    child: Column(children: [
+                      CustomText(
+                        text: 'Year'.tr,
+                        color: whiteColor,
+                        size: size.width * 0.04,
+                        flow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 3),
+                      CustomText(
+                        text: controller.detales.productionCountries == null
+                            ? 'Year'.tr
+                            : controller.detales.releaseDate!,
+                        color: lightColor,
+                        size: size.width * 0.035,
+                        weight: FontWeight.bold,
+                        flow: TextOverflow.ellipsis,
+                      )
+                    ])),
+                SizedBox(
+                    width: (size.width - 32) * 0.6,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           CustomText(
-                            text: 'Year'.tr,
+                            text: 'country'.tr,
                             color: whiteColor,
-                            size: 16,
+                            size: size.width * 0.04,
                             flow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 3),
                           CustomText(
-                            text: controller.detales.productionCountries == null
-                                ? 'Year'.tr
-                                : controller.detales.releaseDate!,
+                            align: TextAlign.left,
+                            text: controller.detales.productionCountries ==
+                                    null
+                                ? 'country'.tr
+                                : controller.detales.originCountry != ''
+                                    ? countries[
+                                        controller.detales.originCountry]
+                                    : controller.detales
+                                        .productionCountries![0].name,
                             color: lightColor,
-                            size: 18,
+                            size: size.width * 0.035,
                             weight: FontWeight.bold,
                             flow: TextOverflow.ellipsis,
                           )
                         ])),
-                    Container(
-                        width: (size.width - 32) * 0.6,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CustomText(
-                                text: 'country'.tr,
-                                color: whiteColor,
-                                size: 16,
-                                flow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 3),
-                              CustomText(
-                                text: controller.detales.productionCountries ==
-                                        null
-                                    ? 'country'.tr
-                                    : controller.detales.originCountry != ''
-                                        ? countries[
-                                            controller.detales.originCountry]
-                                        : controller.detales
-                                            .productionCountries![0].name,
-                                color: lightColor,
-                                size: 16,
-                                weight: FontWeight.bold,
-                                flow: TextOverflow.ellipsis,
-                              )
-                            ])),
-                    Container(
-                        width: (size.width - 32) * 0.2,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CustomText(
-                                text: controller.detales.isShow == false
-                                    ? 'length'.tr
-                                    : 'seasons'.tr,
-                                color: whiteColor,
-                                size: 16,
-                                flow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 3),
-                              CustomText(
-                                text: controller.detales.runtime.toString(),
-                                color: lightColor,
-                                size: 18,
-                                weight: FontWeight.bold,
-                              )
-                            ]))
-                  ])),
+                SizedBox(
+                    width: (size.width - 32) * 0.2,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomText(
+                            text: controller.detales.isShow == false
+                                ? 'length'.tr
+                                : 'seasons'.tr,
+                            color: whiteColor,
+                            size: size.width * 0.04,
+                            flow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 3),
+                          CustomText(
+                            text: controller.detales.runtime.toString(),
+                            color: lightColor,
+                            size: size.width * 0.035,
+                            weight: FontWeight.bold,
+                          )
+                        ]))
+              ]),
             ),
             controller.detales.overview == ''
                 ? Container()
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Container(
+                    child: SizedBox(
                       height: size.height * 0.12,
                       child: SingleChildScrollView(
                           child: CustomText(
                         text: controller.detales.overview,
-                        size: 15,
+                        size: size.width * 0.035,
                         color: whiteColor,
                       )),
                     ),
                   ),
             controller.detales.cast!.cast!.isEmpty
                 ? Container()
-                : Container(
-                    child: ContentScroll(
-                        isCast: true,
-                        isArrow: false,
-                        title: 'cast'.tr,
-                        detale: controller.detales),
-                  ),
+                : ContentScroll(
+                    isCast: true,
+                    isArrow: false,
+                    title: 'cast'.tr,
+                    detale: controller.detales),
             controller.detales.recomendation!.results!.isEmpty
                 ? Container()
                 : Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
-                    child: Container(
-                      child: ContentScroll(
-                          isCast: false,
-                          isArrow: false,
-                          title: 'recommendations'.tr,
-                          detale: controller.detales),
-                    ),
+                    child: ContentScroll(
+                        isCast: false,
+                        isArrow: false,
+                        title: 'recommendations'.tr,
+                        detale: controller.detales),
                   )
           ]),
         ),

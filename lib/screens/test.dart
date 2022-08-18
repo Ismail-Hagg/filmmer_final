@@ -1,122 +1,92 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/auth_cocontroller.dart';
-import '../models/test_model.dart';
 import '../models/upload.dart';
 import '../storage_local/local_database.dart';
 import '../widgets/custom_text.dart';
 
 class Test extends StatelessWidget {
-  // reference to our single class that manages the database
   final dbHelper = DatabaseHelper.instance;
+
 
   // homepage layout
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('sqflite'),
-        actions: [
-          IconButton(
+      appBar: AppBar(title: const CustomText(text:'sqflite'), actions: [
+        IconButton(
             icon: const Icon(Icons.logout),
-            onPressed:(){
+            onPressed: () {
               Get.find<AuthController>().signOut();
-            }
-          )
-        ]
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              child: Text(
-                'insert',
-                style: TextStyle(fontSize: 20),
+            })
+      ]),
+      body: LayoutBuilder(
+          builder: (BuildContext ctx, BoxConstraints constraints) {
+        return Column(
+          children: [
+            Container(
+              color: Colors.orange,
+              width: constraints.maxWidth,
+              height: constraints.maxHeight * 0.3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CustomText(
+                  text: constraints.maxHeight.toString(),
+                ),
+                CustomText(
+                  text: constraints.maxWidth.toString(),
+                )
+                ],
               ),
-              onPressed: () => _insert(FirebaseSend(
-                  genres: ['one','teo','things'],
-                  id: 'kkk',
-                  isShow: true,
-                  name: 'name',
-                  overView: 'overView',
-                  posterPath: 'posterPath',
-                  releaseDate: 'releaseDate',
-                  time: 'time',
-                  voteAverage: 5.5)),
             ),
-            ElevatedButton(
-              child: Text(
-                'query',
-                style: TextStyle(fontSize: 20),
+            Container(
+              height: constraints.maxHeight * 0.7,
+              decoration:  BoxDecoration(
+                image: DecorationImage(
+                  onError: (error, stackTrace) => provide('assets/images/placeholder.jpg',0),
+                  image: provide('https://images.unsplash.com/photo-1660704978699-ed53dd160e2e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80', 1),
+                  fit: BoxFit.cover,
+                ),
+                
               ),
-              onPressed: _query,
-            ),
-            ElevatedButton(
-              child: Text(
-                'update',
-                style: TextStyle(fontSize: 20),
-              ),
-              onPressed: () {},
-            ),
-            ElevatedButton(
-              child: Text(
-                'delete',
-                style: TextStyle(fontSize: 20),
-              ),
-              onPressed: _delete,
-            ),
-            Expanded(
-                child: FutureBuilder(
-                    future: dbHelper.queryAllRows(DatabaseHelper.table,),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        return ListView.builder(
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            return CustomText(
-                              text: snapshot.data![index]['title'].toString(),
-                            );
-                          },
-                        );
-                      } else {
-                        return Container();
-                      }
-                    }))
+            )
           ],
-        ),
-      ),
+        );
+      }),
     );
   }
 
   // Button onPressed methods
 
+  ImageProvider provide(String link,int count){
+    if(count==1){
+      return NetworkImage(link);
+    }else{
+      return AssetImage(link);
+    }
+  }
+
   void _insert(FirebaseSend model) async {
     // row to insert
-   
 
-    final id = await dbHelper.insert(model.toMapLocal(),DatabaseHelper.table);
+    final id = await dbHelper.insert(model.toMapLocal(), DatabaseHelper.table);
     print('inserted row id: $id');
     print(model.toMapLocal());
-    
   }
 
   void _query() async {
-    var lst=[];
+    var lst = [];
     final allRows = await dbHelper.queryAllRows(DatabaseHelper.table);
     // print('query all rows:');
     // for (var element in allRows) {
     //   print(element['genres']);
     // }
-    if(allRows.isEmpty){
+    if (allRows.isEmpty) {
       print('no results');
     }
     for (var i = 0; i < allRows.length; i++) {
       print(allRows[i]['name']);
-      
     }
   }
 

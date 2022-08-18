@@ -1,9 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filmmer_final/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../models/movie_result_model.dart';
 import 'custom_text.dart';
 
 class MovieWidget extends StatelessWidget {
@@ -44,7 +42,7 @@ class MovieWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: Colors.orange.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(5)),
-                child: CustomText(text: rating??'', color: Colors.white, size: 18),
+                child: CustomText(text: rating??'', color: Colors.white, size: MediaQuery.of(context).size.width * 0.04),
               )):Container()
         ]),
       ],

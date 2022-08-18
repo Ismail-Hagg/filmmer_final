@@ -154,10 +154,47 @@
       },
       "oauth_client": [
         {
-          "client_id": "770700470020-m4337s5jv5gf86b6d3b05h4aotk55t0j.apps.googleusercontent.com",
+          "client_id": "770700470020-ap17n0dipb8r669jjamt00c0nnon2tbo.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.filmmer_final",
+            "certificate_hash": "9ced35c49d17695f98da9855dcd837c12a0f48e5"
+          }
+        },
+        {
+          "client_id": "770700470020-m1qg6teaecvt1e07627g7u3nfi8b3rm4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIAlNgdm-5aznM8-L6dVdAf_YcNLxE8jY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "770700470020-m1qg6teaecvt1e07627g7u3nfi8b3rm4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770700470020:android:18954043a8a070e3a05251",
+        "android_client_info": {
+          "package_name": "com.example.final_filmmer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "770700470020-kj3j403dhogjs6sgdda444tt9cvvtlf4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.final_filmmer",
             "certificate_hash": "3f0f458378d86dd6fb80fdc54d285a4c2b19275d"
           }
         },

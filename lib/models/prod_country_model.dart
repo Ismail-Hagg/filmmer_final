@@ -10,9 +10,9 @@ class ProductionCountries {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['iso_3166_1'] = this.iso31661;
-    data['name'] = this.name;
+    final Map<String, dynamic> data =  <String, dynamic>{};
+    data['iso_3166_1'] = iso31661;
+    data['name'] = name;
     return data;
   }
 }

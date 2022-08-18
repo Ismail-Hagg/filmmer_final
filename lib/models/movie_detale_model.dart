@@ -95,7 +95,7 @@ class MovieDetaleModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['adult'] = adult;
     if (genres != null) {
       data['genres'] = genres!.map((v) => v.toJson()).toList();

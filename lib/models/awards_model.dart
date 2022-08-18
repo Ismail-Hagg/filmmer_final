@@ -33,7 +33,7 @@ class AwardModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data =  <String, dynamic>{};
     data['imDbId'] = imDbId;
     data['name'] = name;
     data['description'] = description;
@@ -63,7 +63,7 @@ class Items {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data =  <String, dynamic>{};
     data['eventTitle'] = eventTitle;
     if (outcomeItems != null) {
       data['outcomeItems'] = outcomeItems!.map((v) => v.toJson()).toList();
@@ -97,7 +97,7 @@ class OutcomeItems {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['outcomeYear'] = outcomeYear;
     data['outcomeTitle'] = outcomeTitle;
     data['outcomeCategory'] = outcomeCategory;
@@ -121,7 +121,7 @@ class OutcomeDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data =  <String, dynamic>{};
     data['plainText'] = plainText;
     data['html'] = html;
     return data;

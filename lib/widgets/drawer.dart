@@ -1,13 +1,7 @@
-import 'dart:io';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:filmmer_final/controllers/auth_cocontroller.dart';
 import 'package:filmmer_final/models/user_model.dart';
+import 'package:filmmer_final/screens/test.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../controllers/connectivity_controller.dart';
-import '../controllers/home_controller.dart';
 import '../helper/constants.dart';
 import '../screens/favorites_screen.dart';
 import '../screens/settings_page.dart';
@@ -25,7 +19,7 @@ class Draw extends StatelessWidget {
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [header(size), DrawItems()],
+        children: [header(size), DrawItems(size)],
       ),
     );
   }
@@ -45,124 +39,45 @@ Widget header(size) {
                 return CircleContainer(
                     borderColor: lightColor,
                     borderWidth: 2,
-                    height: size.height * 0.15,
-                    width: size.height * 0.15,
+                    height: size.height * 0.16,
+                    width: size.height * 0.16,
                     textUp: snapshot.data!.name,
                     textDown: snapshot.data!.email,
-                    sizeUp: 20,
-                    sizeDown: 14,
+                    sizeUp: size.width * 0.055,
+                    sizeDown: size.width * 0.035,
                     colorUp: Colors.white,
                     colorDown: lightColor,
-                    spaceUp: size.height * 0.01,
+                    spaceUp: size.width * 0.01,
                     fit: BoxFit.cover,
                     isLocal: snapshot.data!.isLocal,
                     def: snapshot.data!.pic == 'default' ? true : false,
+                    flowDown: TextOverflow.ellipsis,
+                    flowUp: TextOverflow.ellipsis,
                     link: snapshot.data!.pic.toString());
               } else {
                 return CircleContainer(
                     borderColor: lightColor,
                     borderWidth: 2,
-                    height: size.height * 0.15,
-                    width: size.height * 0.15,
+                    height: size.height * 0.16,
+                    width: size.height * 0.16,
                     textUp: 'Username',
                     textDown: 'Email',
-                    sizeUp: 20,
-                    sizeDown: 14,
+                    sizeUp: size.width * 0.055,
+                    sizeDown: size.width * 0.035,
                     colorUp: Colors.white,
                     colorDown: lightColor,
-                    spaceUp: size.height * 0.01,
+                    spaceUp: size.width * 0.01,
                     fit: BoxFit.cover,
                     isLocal: true,
-                    //def: snapshot.data!.pic == 'default' ? true : false,
                     link: '');
               }
-
-              //   if (snapshot.connectionState==ConnectionState.active) {
-              //      return CircleContainer(
-              //       link:'',
-              //   borderColor:lightColor,
-              //   borderWidth:2,
-              //   height:size.height*0.15,
-              //   width:size.height*0.15,
-              //   textUp: 'Username',
-              //   textDown: 'Email',
-              //   sizeUp: 20,
-              //   sizeDown: 14,
-              //   colorUp:Colors.white,
-              //   colorDown:lightColor,
-              //   spaceUp:size.height*0.01,
-              //   child:const Center(child: CircularProgressIndicator(color: lightColor,),),
-              // );
-              //   } else if (snapshot.connectionState==ConnectionState.done) {
-              //        if (Get.find<ConnectivityController>().connect.value != ConnectivityResult.none) {
-              //           return GestureDetector(
-              //             onTap:()async{
-              //               print('pre');
-              //              print(await File(snapshot.data!.pic.toString()).exists());
-              //              print('post');
-              //             },
-              //             child: CircleContainer(
-              //                 borderColor:lightColor,
-              //                 borderWidth:2,
-              //                 height:size.height*0.15,
-              //                 width:size.height*0.15,
-              //                 textUp: snapshot.data!.name,
-              //                 textDown: snapshot.data!.email,
-              //                 sizeUp: 20,
-              //                 sizeDown: 14,
-              //                 colorUp:Colors.white,
-              //                 colorDown:lightColor,
-              //                 spaceUp:size.height*0.01,
-              //                 fit: BoxFit.cover,
-              //                 isLocal:snapshot.data!.isLocal,
-              //                 def:snapshot.data!.pic=='default'?true :false,
-              //                 link: snapshot.data!.pic.toString()
-              //               ),
-              //           );
-              //        } else {
-              //           return CircleContainer(
-              //               borderColor:lightColor,
-              //               borderWidth:2,
-              //               height:size.height*0.15,
-              //               width:size.height*0.15,
-              //               textUp: snapshot.data!.name,
-              //               textDown: snapshot.data!.email,
-              //               sizeUp: 20,
-              //               sizeDown: 14,
-              //               colorUp:Colors.white,
-              //               colorDown:lightColor,
-              //               spaceUp:size.height*0.01,
-              //               fit: BoxFit.cover,
-              //               isLocal:true,
-              //               def:snapshot.data!.pic=='default'?true :false,
-              //               link: ''
-              //             );
-              //        }
-
-              //   } else {
-              //      return CircleContainer(
-              //       link: '',
-              //   borderColor:lightColor,
-              //   borderWidth:2,
-              //   height:size.height*0.15,
-              //   width:size.height*0.15,
-              //   textUp: 'Username',
-              //   textDown: 'Email',
-              //   sizeUp: 20,
-              //   sizeDown: 14,
-              //   colorUp:Colors.white,
-              //   colorDown:lightColor,
-              //   spaceUp:size.height*0.01,
-              //   child:const Icon(Icons.error,color: lightColor));
-
-              //   }
             }),
       ),
     ),
   );
 }
 
-Widget DrawItems() {
+Widget DrawItems(size) {
   return Container(
     padding: const EdgeInsets.all(20),
     child: Wrap(
@@ -173,9 +88,9 @@ Widget DrawItems() {
             Icons.list,
             color: lightColor,
           ),
-          title:  CustomText(
+          title: CustomText(
             text: 'watchList'.tr,
-            size: 16,
+            size: size.width * 0.04,
           ),
           onTap: () {
             Get.back();
@@ -184,9 +99,9 @@ Widget DrawItems() {
         ),
         ListTile(
           leading: const Icon(Icons.favorite, color: lightColor),
-          title:  CustomText(
+          title: CustomText(
             text: 'favourite'.tr,
-            size: 16,
+            size: size.width * 0.04,
           ),
           onTap: () {
             Get.back();
@@ -195,13 +110,24 @@ Widget DrawItems() {
         ),
         ListTile(
           leading: const Icon(Icons.settings, color: lightColor),
-          title:  CustomText(
+          title: CustomText(
             text: 'settings'.tr,
-            size: 16,
+            size: size.width * 0.04,
           ),
           onTap: () {
             Get.back();
             Get.to(() => Settings());
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.settings, color: lightColor),
+          title: CustomText(
+            text: 'test',
+            size: size.width * 0.04,
+          ),
+          onTap: () {
+            Get.back();
+            Get.to(() => Test());
           },
         )
       ],

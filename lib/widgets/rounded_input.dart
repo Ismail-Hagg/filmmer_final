@@ -16,14 +16,16 @@ class RoundedInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return TextFieldContainer(
       child: TextFormField(
         onSaved:sav ,
         obscureText: isPass,
         controller:conreol,
-        style:const TextStyle(
+        style: TextStyle(
             fontFamily: 'OpenSans',
-            color:lightColor
+            color:lightColor,
+            fontSize: size.width * 0.035,
           ),
         cursorColor: lightColor,
         keyboardType: isEmail,

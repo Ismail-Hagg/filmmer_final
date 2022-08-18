@@ -2,12 +2,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'dart:async';
-
 import '../models/test_model.dart';
-import '../storage_local/local_database.dart';
+
+
 
 class ConnectivityController extends GetxController {
-  Rx<ConnectivityResult> _connectionStatus = Rx(ConnectivityResult.none);
+  final Rx<ConnectivityResult> _connectionStatus = Rx(ConnectivityResult.none);
   Rx<ConnectivityResult> get connect => _connectionStatus;
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
@@ -23,24 +23,16 @@ class ConnectivityController extends GetxController {
     super.onInit();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
+
+  //check the connection status
   Future<void> initConnectivity() async {
     late ConnectivityResult result;
-    // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await _connectivity.checkConnectivity();
     } on PlatformException catch (e) {
       print('Couldn\'t check connectivity status ${e.toString()}');
       return;
     }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    // if (!mounted) {
-    //   return Future.value(null);
-    // }
-
     return _updateConnectionStatus(result);
   }
 

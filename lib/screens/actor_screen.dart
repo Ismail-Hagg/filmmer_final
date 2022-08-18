@@ -10,7 +10,7 @@ import '../widgets/custom_text.dart';
 import '../widgets/movie_widget.dart';
 
 class ActorScreen extends StatelessWidget {
-  ActorScreen({Key? key}) : super(key: key);
+ const ActorScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -81,11 +81,11 @@ class ActorScreen extends StatelessWidget {
                     )
                   ],
                 )),
-            Container(
+            SizedBox(
               height: size.height * 0.7,
               child: Column(
                 children: [
-                  Container(
+                  SizedBox(
                       height: size.height * 0.08,
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -93,16 +93,16 @@ class ActorScreen extends StatelessWidget {
                             CustomText(
                                 text: controller.model.name,
                                 color: lightColor,
-                                size: size.width * 0.05),
+                                size: size.width * 0.037),
                             CustomText(
                                 text:
                                     '${'age'.tr} : ${controller.model.age.toString()} ${'years'.tr}',
                                 color: lightColor,
-                                size: size.width * 0.04)
+                                size: size.width * 0.028)
                           ])),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Container(
+                    child: SizedBox(
                       height: size.height * 0.15,
                       child: SingleChildScrollView(
                           child: controller.model.bio != null
@@ -126,10 +126,9 @@ class ActorScreen extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Container(
+                    child: SizedBox(
                       height: size.height * 0.05,
                       width: size.width * 0.6,
-                      //color:Colors.red,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -187,24 +186,24 @@ class ActorScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 10),
-                    child: Container(
+                    child: SizedBox(
                         height: size.height * 0.1,
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             physics: const BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
-                              return Container(
+                              return SizedBox(
                                 width: size.width * 0.3,
                                 child: Column(children: [
                                   CustomText(
-                                      text: controller.awardMap[index]['count'].toString(), size: 16, color: Colors.white),
+                                      text: controller.awardMap[index]['count'].toString(), size: size.width * 0.03, color: Colors.white),
                                   const SizedBox(
                                     height: 5,
                                   ),
                                   CustomText(
                                     maxline: 2,
                                     text: controller.awardMap[index]['awardName'].toString(),
-                                    size: 14,
+                                    size: size.width * 0.03,
                                     color: lightColor,
                                     flow: TextOverflow.ellipsis,
                                   )
@@ -220,7 +219,7 @@ class ActorScreen extends StatelessWidget {
                             },
                             itemCount: controller.awardMap.length)),
                   ):Container(),
-                  Container(
+                  SizedBox(
                     height: (size.height * 0.32) - 36,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,

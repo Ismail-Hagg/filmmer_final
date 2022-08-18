@@ -48,15 +48,15 @@ class Settings extends StatelessWidget {
                             textDown: snapshot.data!.email,
                             colorUp: whiteColor,
                             colorDown: whiteColor,
-                            sizeUp: constraints.maxHeight * 0.025,
-                            sizeDown: constraints.maxHeight * 0.025,
+                            sizeUp: constraints.maxHeight * 0.02,
+                            sizeDown: constraints.maxHeight * 0.015,
                             isLocal: snapshot.data!.isLocal,
                             color: whiteColor,
                             width: constraints.maxHeight * 0.2,
                             height: constraints.maxHeight * 0.2,
                             borderColor: lightColor,
                             borderWidth: 2,
-                            spaceUp: constraints.maxHeight * 0.02,
+                            spaceUp: constraints.maxHeight * 0.01,
                           );
                         } else {
                           return const Center(
@@ -70,8 +70,8 @@ class Settings extends StatelessWidget {
                             textDown: controll.email, 
                             colorUp: whiteColor,
                             colorDown: whiteColor,
-                            sizeUp: constraints.maxHeight * 0.025,
-                            sizeDown: constraints.maxHeight * 0.025,
+                            sizeUp: constraints.maxHeight * 0.02,
+                            sizeDown: constraints.maxHeight * 0.015,
                             isLocal: true,
                             color: whiteColor,
                             width: constraints.maxHeight * 0.2,
@@ -82,7 +82,7 @@ class Settings extends StatelessWidget {
                           ),
                 ),
               ),
-              Container(
+              SizedBox(
                 height: constraints.maxHeight * 0.7,
                 child: Card(
                   color:mainColor,
@@ -94,6 +94,7 @@ class Settings extends StatelessWidget {
                         child: ListTile(
                             leading: const Icon(Icons.photo, color: lightColor),
                             title:  CustomText(
+                              size: constraints.maxWidth * 0.04,
                                 text: "changepic".tr, color: whiteColor),
                             onTap: ()=> controller.openImagePicker()),
                       ),
@@ -103,6 +104,7 @@ class Settings extends StatelessWidget {
                             leading:
                                 const Icon(Icons.language, color: lightColor),
                             title: CustomText(
+                              size: constraints.maxWidth * 0.04,
                                 text: "changelanguage".tr, color: whiteColor),
                             onTap: () {
                               Get.defaultDialog(
@@ -112,12 +114,14 @@ class Settings extends StatelessWidget {
                                     ListTile(
                                       onTap: ()=> controller.change('en', 'US'),
                                       title:  CustomText(
+                                        size: constraints.maxWidth * 0.04,
                                         text: "en".tr,
                                       ),
                                     ),
                                     ListTile(
                                       onTap: ()=> controller.change('ar', 'SA'),
                                       title:  CustomText(
+                                        size: constraints.maxWidth * 0.04,
                                         text: "ar".tr,
                                       ),
                                     )
@@ -131,16 +135,17 @@ class Settings extends StatelessWidget {
                         child: ListTile(
                             leading: const Icon(Icons.logout, color: lightColor),
                             title:  CustomText(
+                              size: constraints.maxWidth * 0.04,
                                 text: "logout".tr, color: whiteColor),
                             onTap: () {
                               Get.defaultDialog(
                                 title: '',
                                 content: Column(
                                   children: [
-                                    Text("logoutq".tr),
+                                    CustomText(text:"logoutq".tr,size: constraints.maxWidth * 0.04),
                                     TextButton(onPressed: (){
                                       Get.find<AuthController>().signOut();
-                                    }, child:  CustomText(text: "answer".tr))
+                                    }, child:  CustomText(text: "answer".tr,size: constraints.maxWidth * 0.04,color: lightColor,))
                                   ],
                                 ),
                               );
