@@ -81,7 +81,7 @@ class AuthController extends GetxController {
       try {
         await auth
             .createUserWithEmailAndPassword(
-                email: email.toString(), password: password.toString())
+                email: email.toString().trim(), password: password.toString().trim())
             .then((user) async => {
                   saveUser(user, false),
                   Get.offAll(() => ControllScreen()),
@@ -103,7 +103,7 @@ class AuthController extends GetxController {
     count.value = 1;
     try {
       await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
+          .signInWithEmailAndPassword(email: email.trim(), password: password.trim())
           .then((user) async => {
                 FireStoreService()
                     .getCurrentUser(user.user!.uid)
