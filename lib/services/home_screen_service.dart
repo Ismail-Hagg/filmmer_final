@@ -55,7 +55,8 @@ class FirstPageService {
         result = jsonDecode(response.body);
       }
       return CastModel.fromJson(result);
-    } catch (e) {
+    }
+     catch (e) {
       snack('connect'.tr, e.toString());
       return CastModel();
     }

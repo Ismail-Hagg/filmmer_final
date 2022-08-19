@@ -1,5 +1,4 @@
 import 'package:filmmer_final/models/user_model.dart';
-import 'package:filmmer_final/screens/test.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../helper/constants.dart';
@@ -119,17 +118,6 @@ Widget DrawItems(size) {
             Get.to(() => Settings());
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.settings, color: lightColor),
-          title: CustomText(
-            text: 'test',
-            size: size.width * 0.04,
-          ),
-          onTap: () {
-            Get.back();
-            Get.to(() => Test());
-          },
-        )
       ],
     ),
   );
